@@ -266,7 +266,7 @@ Une simple carte de prototypage avec la même empreinte que les autres cartes ad
 Une carte plastique au même format que les cartes complémentaires pouvant par exemple permettre l'isolation des circuits est également disponible.
 | Front View                | Back View                 |
 | :-----------------------: | :-----------------------: |
-| <img src="../main/hardware/printable_3d_files/3d_din_mount_front.png" width="880" /> | <img src="../main/hardware/printable_3d_files/3d_din_mount_back.png" width="1068" /> |
+| <img src="https://github.com/SeByDocKy/pvbrain2/raw/main/hardware/printable_3d_files/3d_din_mount_front.png" width="880" /> | <img src="https://github.com/SeByDocKy/pvbrain2/raw/main/hardware/printable_3d_files/3d_din_mount_back.png" width="1068" /> |
 
 ## ["Carte Option 2" :](../main/hardware/addon_carte_old_option2)
 L'ancienne carte "Option 2" réalisée par <sub>[![Luc](https://img.shields.io/badge/Luc-black?logo=discord&style=flat)](https://reseautono.me/)</sub> pour le [PVbrain V1](https://github.com/Bandit-17/PVBRAIN) est également compatible avec le __PVbrain V2__.
