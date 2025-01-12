@@ -16,12 +16,12 @@ time:
         hours: 23
         then:  
           - globals.set:
-              id: ${solar_charger_name}_pv_energy_yesteday_global
-              value: !lambda return ( id(${solar_charger_name}_pv_energy_yesteday_global) =  float( id(${solar_charger_name}_pv_energy_today).state) );         
+              id: ${solar_charger_name}_pv_energy_yesterday_global
+              value: !lambda return ( id(${solar_charger_name}_pv_energy_yesterday_global) =  float( id(${solar_charger_name}_pv_energy_today).state) );         
                 
           - globals.set:
-              id: ${solar_charger_name}_battery_charging_energy_yesteday_global
-              value: !lambda return ( id(${solar_charger_name}_battery_charging_energy_yesteday_global) =  float( id(${solar_charger_name}_battery_charging_energy_today).state) );        
+              id: ${solar_charger_name}_battery_charging_energy_yesterday_global
+              value: !lambda return ( id(${solar_charger_name}_battery_charging_energy_yesterday_global) =  float( id(${solar_charger_name}_battery_charging_energy_today).state) );        
 
 globals:
   - id: ${solar_charger_name}_battery_coefficient
@@ -34,11 +34,11 @@ globals:
   - id: ${solar_charger_name}_current_load_charging_mode_global
     type: int  
 
-  - id: ${solar_charger_name}_pv_energy_yesteday_global
+  - id: ${solar_charger_name}_pv_energy_yesterday_global
     type: float
     restore_value: yes
     
-  - id: ${solar_charger_name}_battery_charging_energy_yesteday_global
+  - id: ${solar_charger_name}_battery_charging_energy_yesterday_global
     type: float
     restore_value: yes
  
@@ -211,8 +211,8 @@ sensor:
     icon: mdi:percent
     update_interval: ${solar_charger_template_update}
     lambda: |-
-      if (id(${solar_charger_name}_solar_panel_power).state != 0.0) {
-        return (id(${solar_charger_name}_charging_power).state/id(${solar_charger_name}_solar_panel_power).state)*100.0;    
+      if (id(${solar_charger_name}_pv_power).state != 0.0) {
+        return (id(${solar_charger_name}_charging_power).state/id(${solar_charger_name}_pv_power).state)*100.0;    
       }
       else{
         return 0.0;
@@ -230,14 +230,14 @@ sensor:
     icon: mdi:counter
     
   - platform: template
-    name: ${name}_${solar_charger_name}_battery_charging_energy_yesteday_template
-    id: ${solar_charger_name}_battery_charging_energy_yesteday
+    name: ${name}_${solar_charger_name}_battery_charging_energy_yesterday
+    id: ${solar_charger_name}_battery_charging_energy_yesterday
     unit_of_measurement: 'kWh'
     accuracy_decimals: 1
     icon: mdi:power
     update_interval: ${solar_charger_template_update}
     lambda: |-
-      return (id(${solar_charger_name}_battery_charging_energy_yesteday).state = id(${solar_charger_name}_battery_charging_energy_yesteday_global));
+      return (id(${solar_charger_name}_battery_charging_energy_yesterday).state = id(${solar_charger_name}_battery_charging_energy_yesterday_global));
 
   - platform: modbus_controller
     modbus_controller_id: ${solar_charger_name}_modbus_controller
@@ -307,8 +307,8 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: ${solar_charger_name}_modbus_controller
-    id: ${solar_charger_name}_solar_panel_voltage
-    name: ${name}_${solar_charger_name}_solar_panel_voltage
+    id: ${solar_charger_name}_pv_voltage
+    name: ${name}_${solar_charger_name}_pv_voltage
     address: 0x107
     register_type: holding
     value_type: U_WORD
@@ -321,8 +321,8 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: ${solar_charger_name}_modbus_controller
-    id: ${solar_charger_name}_solar_panel_current
-    name: ${name}_${solar_charger_name}_solar_panel_current
+    id: ${solar_charger_name}_pv_current
+    name: ${name}_${solar_charger_name}_pv_current
     address: 0x108
     register_type: holding
     value_type: U_WORD
@@ -335,8 +335,8 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: ${solar_charger_name}_modbus_controller
-    id: ${solar_charger_name}_solar_panel_power
-    name: ${name}_${solar_charger_name}_solar_panel_power
+    id: ${solar_charger_name}_pv_power
+    name: ${name}_${solar_charger_name}_pv_power
     address: 0x109
     register_type: holding
     value_type: U_WORD
@@ -348,7 +348,7 @@ sensor:
   - platform: total_daily_energy
     id: ${solar_charger_name}_pv_energy_today
     name: ${name}_${solar_charger_name}_pv_energy_today
-    power_id: ${solar_charger_name}_solar_panel_power
+    power_id: ${solar_charger_name}_pv_power
     unit_of_measurement: 'kWh'
     accuracy_decimals: 1
     method: trapezoid
@@ -358,14 +358,14 @@ sensor:
     icon: mdi:counter
     
   - platform: template
-    id: ${solar_charger_name}_pv_energy_yesteday
-    name: ${name}_${solar_charger_name}_pv_energy_yesteday
+    id: ${solar_charger_name}_pv_energy_yesterday
+    name: ${name}_${solar_charger_name}_pv_energy_yesterday
     unit_of_measurement: 'kWh'
     accuracy_decimals: 1
     icon: mdi:power
     update_interval: ${solar_charger_template_update}
     lambda: |-
-      return (id( ${solar_charger_name}_pv_energy_yesteday).state = id( ${solar_charger_name}_pv_energy_yesteday_global ));
+      return (id( ${solar_charger_name}_pv_energy_yesterday).state = id( ${solar_charger_name}_pv_energy_yesterday_global ));
     
   - platform: modbus_controller
     modbus_controller_id: ${solar_charger_name}_modbus_controller
@@ -464,7 +464,7 @@ sensor:
   - platform: modbus_controller
     modbus_controller_id: ${solar_charger_name}_modbus_controller
     id: ${solar_charger_name}_energy_generation_today
-    name: ${name}_${solar_charger_name}_energy_generation_today_today
+    name: ${name}_${solar_charger_name}_energy_generation_today
     address: 0x0113
     register_type: holding
     value_type: U_WORD
@@ -493,8 +493,8 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: ${solar_charger_name}_modbus_controller
-    id: ${solar_charger_name}_total_number_operating_today
-    name: ${name}_${solar_charger_name}_total_number_operating_today
+    id: ${solar_charger_name}_total_number_operating_day
+    name: ${name}_${solar_charger_name}_total_number_operating_day
     address: 0x0115
     register_type: holding
     value_type: U_WORD
@@ -1301,7 +1301,7 @@ number:
     unit_of_measurement: 'A'
     icon: mdi:current-dc
     min_value: 2
-    max_value: 60
+    max_value: 100
     step:  2
     mode: 'slider'
     multiply: 100
