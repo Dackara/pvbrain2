@@ -1,0 +1,819 @@
+modbus_controller:
+  - id: ${powermeter_name}_modbus_controller
+    address: ${powermeter_address}
+    modbus_id: ${powermeter_modbus_id}
+    command_throttle: ${powermeter_throttle}
+    setup_priority: -10
+    update_interval: ${powermeter_update_interval}
+   
+sensor:
+
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_a_voltage
+    id: ${powermeter_name}_phase_a_voltage
+    register_type: holding
+    address: 0x0100
+    unit_of_measurement: 'V'
+    device_class: voltage
+    state_class: measurement
+    value_type: U_WORD
+    accuracy_decimals: 1
+    icon: mdi:sine-wave
+    filters:
+      - multiply: 0.01     # value = DATA / 100
+
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_b_voltage
+    id: ${powermeter_name}_phase_b_voltage
+    register_type: holding
+    address: 0x0101
+    unit_of_measurement: 'V'
+    device_class: voltage
+    state_class: measurement
+    value_type: U_WORD
+    accuracy_decimals: 1
+    icon: mdi:sine-wave
+    filters:
+      - multiply: 0.01     # value = DATA / 100
+
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_c_voltage
+    id: ${powermeter_name}_phase_c_voltage
+    register_type: holding
+    address: 0x0102
+    unit_of_measurement: 'V'
+    device_class: voltage
+    state_class: measurement
+    value_type: U_WORD
+    accuracy_decimals: 1
+    icon: mdi:sine-wave
+    filters:
+      - multiply: 0.01     # value = DATA / 100 
+
+  # ── Currents ──────────────────────────────────────────────────────────────
+
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_a_current
+    id: ${powermeter_name}_phase_a_current
+    register_type: holding
+    address: 0x0103
+    unit_of_measurement: 'A'
+    device_class: current
+    state_class: measurement
+    value_type: U_WORD
+    accuracy_decimals: 1
+    icon: mdi:current-ac
+    filters:
+      - multiply: 0.01     # value = DATA / 100
+
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_b_current
+    id: ${powermeter_name}_phase_b_current
+    register_type: holding
+    address: 0x0104
+    unit_of_measurement: 'A'
+    device_class: current
+    state_class: measurement
+    value_type: U_WORD
+    accuracy_decimals: 1
+    icon: mdi:current-ac
+    filters:
+      - multiply: 0.01
+
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_c_current
+    id: ${powermeter_name}_phase_c_current
+    register_type: holding
+    address: 0x0105
+    unit_of_measurement: 'A'
+    device_class: current
+    state_class: measurement
+    value_type: U_WORD
+    accuracy_decimals: 1
+    icon: mdi:current-ac
+    filters:
+      - multiply: 0.01
+
+  # ── Active Power (per phase, unit = W, value = DATA) ─────────────────────
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_a_active_power
+    id: ${powermeter_name}_phase_a_active_power
+    register_type: holding
+    address: 0x0106
+    unit_of_measurement: 'W'
+    device_class: power
+    state_class: measurement
+    value_type: U_WORD
+    icon: mdi:power
+    accuracy_decimals: 1
+    # force_new_range: true
+
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_b_active_power
+    id: ${powermeter_name}_phase_b_active_power
+    register_type: holding
+    address: 0x0107
+    unit_of_measurement: 'W'
+    device_class: power
+    state_class: measurement
+    value_type: U_WORD
+    icon: mdi:power
+    accuracy_decimals: 1
+
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_c_active_power
+    id: ${powermeter_name}_phase_c_active_power
+    register_type: holding
+    address: 0x0108
+    unit_of_measurement: 'W'
+    device_class: power
+    state_class: measurement
+    value_type: U_WORD
+    icon: mdi:power
+    accuracy_decimals: 1
+
+  # Three-phase total active power – 32-bit (0x0109 high word, 0x010A low word)
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_total_active_power
+    id: ${powermeter_name}_totalpower_total
+    register_type: holding
+    address: 0x0109
+    unit_of_measurement: "W"
+    device_class: power
+    state_class: measurement
+    value_type: U_DWORD      # reads 2 consecutive registers (high word first per manual)
+    accuracy_decimals: 1
+    icon: mdi:power
+
+ # ── Reactive Power (per phase, unit = var) ────────────────────────────────
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_a_reactive_power
+    id: ${powermeter_name}_phase_a_reactive_power
+    register_type: holding
+    address: 0x010B
+    unit_of_measurement: 'var'
+    state_class: measurement
+    value_type: U_WORD
+    accuracy_decimals: 1
+
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_b_reactive_power
+    id: ${powermeter_name}_phase_b_reactive_power
+    register_type: holding
+    address: 0x010C
+    unit_of_measurement: 'var'
+    state_class: measurement
+    value_type: U_WORD
+    accuracy_decimals: 1
+
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_c_reactive_power
+    id: ${powermeter_name}_phase_c_reactive_power
+    register_type: holding
+    address: 0x010D
+    unit_of_measurement: 'var'
+    state_class: measurement
+    value_type: U_WORD
+    accuracy_decimals: 1
+
+  # Three-phase total reactive power – 32-bit (0x010E high, 0x010F low)
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_total_reactive_power
+    id: ${powermeter_name}_total_reactive_power
+    register_type: holding
+    address: 0x010E
+    unit_of_measurement: 'var'
+    state_class: measurement
+    value_type: U_DWORD
+    accuracy_decimals: 1
+
+
+  # ── Apparent Power (per phase, unit = VA) ─────────────────────────────────
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_a_apparent_power
+    id: ${powermeter_name}_phase_a_apparent_power
+    register_type: holding
+    address: 0x0110
+    unit_of_measurement: 'VA'
+    device_class: apparent_power
+    state_class: measurement
+    value_type: U_WORD
+    accuracy_decimals: 1
+
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_b_apparent_power
+    id: ${powermeter_name}_phase_b_apparent_power
+    register_type: holding
+    address: 0x0111
+    unit_of_measurement: 'VA'
+    device_class: apparent_power
+    state_class: measurement
+    value_type: U_WORD
+    accuracy_decimals: 1
+
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_c_apparent_power
+    id: ${powermeter_name}_phase_c_apparent_power
+    register_type: holding
+    address: 0x0112
+    unit_of_measurement: 'VA'
+    device_class: apparent_power
+    state_class: measurement
+    value_type: U_WORD
+    accuracy_decimals: 0
+
+  # Three-phase total apparent power – 32-bit (0x0113 high, 0x0114 low)
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_total_apparent_power
+    id: ${powermeter_name}_total_apparent_power
+    register_type: holding
+    address: 0x0113
+    unit_of_measurement: 'VA'
+    device_class: apparent_power
+    state_class: measurement
+    value_type: U_DWORD
+    accuracy_decimals: 0    
+
+ # ── Frequency ──────────────────────────────────────────────────────────────
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_frequency
+    id: ${powermeter_name}_frequency
+    register_type: holding
+    address: 0x0115
+    unit_of_measurement: 'Hz'
+    device_class: frequency
+    state_class: measurement
+    value_type: U_WORD
+    accuracy_decimals: 2
+    icon: mdi:metronome
+    filters:
+      - multiply: 0.01     # value = DATA / 100
+
+  # ── Power Factors (value = DATA / 1000) ────────────────────────────────────
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_a_power_factor
+    id: ${powermeter_name}_phase_a_power_factor
+    register_type: holding
+    address: 0x0116
+    unit_of_measurement: ""
+    device_class: power_factor
+    state_class: measurement
+    value_type: U_WORD
+    accuracy_decimals: 3
+    filters:
+      - multiply: 0.001
+
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_b_power_factor
+    id: ${powermeter_name}_phase_b_power_factor
+    register_type: holding
+    address: 0x0117
+    unit_of_measurement: ""
+    device_class: power_factor
+    state_class: measurement
+    value_type: U_WORD
+    accuracy_decimals: 3
+    filters:
+      - multiply: 0.001
+
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_c_power_factor
+    id: ${powermeter_name}_phase_c_power_factor
+    register_type: holding
+    address: 0x0118
+    unit_of_measurement: ""
+    device_class: power_factor
+    state_class: measurement
+    value_type: U_WORD
+    accuracy_decimals: 3
+    filters:
+      - multiply: 0.001
+
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_total_power_factor
+    id: ${powermeter_name}_total_power_factor
+    register_type: holding
+    address: 0x0119
+    unit_of_measurement: ""
+    device_class: power_factor
+    state_class: measurement
+    value_type: U_WORD
+    accuracy_decimals: 3
+    filters:
+      - multiply: 0.001
+
+  # ── Active Energy per phase – 32-bit, unit = kWh (DATA/100) ───────────────
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_a_active_energy
+    id: ${powermeter_name}_phase_a_active_energy
+    register_type: holding
+    address: 0x011A          # 0x011A high word, 0x011B low word
+    unit_of_measurement: 'kWh'
+    device_class: energy
+    state_class: total_increasing
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    icon: mdi:counter
+    filters:
+      - multiply: 0.01
+
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_b_active_energy
+    id: ${powermeter_name}_phase_b_active_energy
+    register_type: holding
+    address: 0x011C
+    unit_of_measurement: 'kWh'
+    device_class: energy
+    state_class: total_increasing
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    icon: mdi:counter
+    filters:
+      - multiply: 0.01
+
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_c_active_energy
+    id: ${powermeter_name}_phase_c_active_energy
+    register_type: holding
+    address: 0x011E
+    unit_of_measurement: "kWh"
+    device_class: energy
+    state_class: total_increasing
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    icon: mdi:counter
+    filters:
+      - multiply: 0.01
+
+  # Three-phase total active energy (0x0120 high, 0x0121 low)
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_total_active_energy
+    id: ${powermeter_name}_total_active_energy
+    register_type: holding
+    address: 0x0120
+    unit_of_measurement: 'kWh'
+    device_class: energy
+    state_class: total_increasing
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    icon: mdi:counter
+    filters:
+      - multiply: 0.01
+
+  # ── Reactive Energy per phase – 32-bit, unit = kvarh (DATA/100) ───────────
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_a_reactive_energy
+    id: ${powermeter_name}_phase_a_reactive_energy
+    register_type: holding
+    address: 0x0122
+    unit_of_measurement: 'kvarh'
+    state_class: total_increasing
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    icon: mdi:counter
+    filters:
+      - multiply: 0.01
+
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_b_reactive_energy
+    id: ${powermeter_name}_phase_b_reactive_energy
+    register_type: holding
+    address: 0x0124
+    unit_of_measurement: 'kvarh'
+    state_class: total_increasing
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    icon: mdi:counter
+    filters:
+      - multiply: 0.01
+
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_c_reactive_energy
+    id: ${powermeter_name}_phase_c_reactive_energy
+    register_type: holding
+    address: 0x0126
+    unit_of_measurement: 'kvarh'
+    state_class: total_increasing
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    icon: mdi:counter
+    filters:
+      - multiply: 0.01
+
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_total_reactive_energy
+    id: ${powermeter_name}_total_reactive_energy
+    register_type: holding
+    address: 0x0128
+    unit_of_measurement: 'kvarh'
+    state_class: total_increasing
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    icon: mdi:counter
+    filters:
+      - multiply: 0.01
+
+
+  # ── Apparent Energy per phase – 32-bit, unit = kVAh (DATA/100) ────────────
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_a_apparent_energy
+    id: ${powermeter_name}_phase_a_apparent_energy
+    register_type: holding
+    address: 0x012A
+    unit_of_measurement: 'kVAh'
+    state_class: total_increasing
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    icon: mdi:counter
+    filters:
+      - multiply: 0.01
+
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_b_apparent_energy
+    id: ${powermeter_name}_phase_b_apparent_energy
+    register_type: holding
+    address: 0x012C
+    unit_of_measurement: 'kVAh'
+    state_class: total_increasing
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    icon: mdi:counter
+    filters:
+      - multiply: 0.01
+
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_c_apparent_energy
+    id: ${powermeter_name}_phase_c_apparent_energy
+    register_type: holding
+    address: 0x012E
+    unit_of_measurement: 'kVAh'
+    state_class: total_increasing
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    icon: mdi:counter
+    filters:
+      - multiply: 0.01
+
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_total_apparent_energy
+    id: ${powermeter_name}_total_apparent_energy
+    register_type: holding
+    address: 0x0130
+    unit_of_measurement: 'kVAh'
+    state_class: total_increasing
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    icon: mdi:counter
+    filters:
+      - multiply: 0.01      
+
+
+  # ── Bidirectional active energy (forward / reverse) – 32-bit, kWh ─────────
+  # Forward (import)
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_a_pos_active_energy
+    id: ${powermeter_name}_phase_a_pos_active_energy
+    register_type: holding
+    address: 0x0134
+    unit_of_measurement: 'kWh'
+    device_class: energy
+    state_class: total_increasing
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    icon: mdi:counter
+    filters:
+      - multiply: 0.01
+
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_b_pos_active_energy
+    id: ${powermeter_name}_phase_b_pos_active_energy
+    register_type: holding
+    address: 0x0136
+    unit_of_measurement: 'kWh'
+    device_class: energy
+    state_class: total_increasing
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    icon: mdi:counter
+    filters:
+      - multiply: 0.01
+
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_c_pos_active_energy
+    id: ${powermeter_name}_phase_c_pos_active_energy
+    register_type: holding
+    address: 0x0138
+    unit_of_measurement: 'kWh'
+    device_class: energy
+    state_class: total_increasing
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    icon: mdi:counter
+    filters:
+      - multiply: 0.01
+
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_total_pos_active_energy
+    id: ${powermeter_name}_total_pos_active_energy
+    register_type: holding
+    address: 0x013A
+    unit_of_measurement: 'kWh'
+    device_class: energy
+    state_class: total_increasing
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    icon: mdi:counter
+    filters:
+      - multiply: 0.01
+
+  # Reverse (export / generation feed-in)
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_a_neg_active_energy
+    id: ${powermeter_name}_phase_a_neg_active_energy
+    register_type: holding
+    address: 0x013C
+    unit_of_measurement: 'kWh'
+    device_class: energy
+    state_class: total_increasing
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    icon: mdi:counter
+    filters:
+      - multiply: 0.01
+
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_b_neg_active_energy
+    id: ${powermeter_name}_phase_b_neg_active_energy
+    register_type: holding
+    address: 0x013E
+    unit_of_measurement: 'kWh'
+    device_class: energy
+    state_class: total_increasing
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    icon: mdi:counter
+    filters:
+      - multiply: 0.01
+
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_c_neg_active_energy
+    id: ${powermeter_name}_phase_c_neg_active_energy
+    register_type: holding
+    address: 0x0140
+    unit_of_measurement: 'kWh'
+    device_class: energy
+    state_class: total_increasing
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    icon: mdi:counter
+    filters:
+      - multiply: 0.01
+
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_total_neg_active_energy
+    id: ${powermeter_name}_total_neg_active_energy
+    register_type: holding
+    address: 0x0142
+    unit_of_measurement: 'kWh'
+    device_class: energy
+    state_class: total_increasing
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    icon: mdi:counter
+    filters:
+      - multiply: 0.01
+
+  # ── Bidirectional reactive energy (forward / reverse) – 32-bit, kWh ───────
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_a_pos_reactive_energy
+    id: ${powermeter_name}_phase_a_pos_reactive_energy
+    register_type: holding
+    address: 0x0144
+    unit_of_measurement: 'kvarh'
+    state_class: total_increasing
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    icon: mdi:counter
+    filters:
+      - multiply: 0.01
+
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_b_pos_reactive_energy
+    id: ${powermeter_name}_phase_b_pos_reactive_energy
+    register_type: holding
+    address: 0x0146
+    unit_of_measurement: 'kvarh'
+    state_class: total_increasing
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    icon: mdi:counter
+    filters:
+      - multiply: 0.01
+
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_c_pos_reactive_energy
+    id: ${powermeter_name}_phase_c_pos_reactive_energy
+    register_type: holding
+    address: 0x0148
+    unit_of_measurement: 'kvarh'
+    state_class: total_increasing
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    icon: mdi:counter
+    filters:
+      - multiply: 0.01
+
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_total_pos_reactive_energy
+    id: ${powermeter_name}_total_pos_reactive_energy
+    register_type: holding
+    address: 0x014A
+    unit_of_measurement: 'kvarh'
+    state_class: total_increasing
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    icon: mdi:counter
+    filters:
+      - multiply: 0.01
+
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_a_neg_reactive_energy
+    id: ${powermeter_name}_phase_a_neg_reactive_energy
+    register_type: holding
+    address: 0x014C
+    unit_of_measurement: 'kvarh'
+    state_class: total_increasing
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    icon: mdi:counter
+    filters:
+      - multiply: 0.01
+
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_b_neg_reactive_energy
+    id: ${powermeter_name}_phase_b_neg_reactive_energy
+    register_type: holding
+    address: 0x014E
+    unit_of_measurement: 'kvarh'
+    state_class: total_increasing
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    icon: mdi:counter
+    filters:
+      - multiply: 0.01
+
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_c_neg_reactive_energy
+    id: ${powermeter_name}_phase_c_neg_reactive_energy
+    register_type: holding
+    address: 0x0150
+    unit_of_measurement: "kvarh"
+    state_class: total_increasing
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    icon: mdi:counter
+    filters:
+      - multiply: 0.01
+
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_total_reverse_reactive_energy
+    id: ${powermeter_name}_total_reverse_reactive_energy
+    register_type: holding
+    address: 0x0152
+    unit_of_measurement: 'kvarh'
+    state_class: total_increasing
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    icon: mdi:counter
+    filters:
+      - multiply: 0.01
+
+  # ── THDu, THDi ───────
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_a_thdv
+    id: ${powermeter_name}_phase_a_thdv
+    register_type: holding
+    address: 0x0160
+    unit_of_measurement: '%'
+    value_type: U_WORD
+    accuracy_decimals: 1
+    icon: mdi:percent
+    filters:
+      - multiply: 0.01
+
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_b_thdv
+    id: ${powermeter_name}_phase_b_thdv
+    register_type: holding
+    address: 0x0161
+    unit_of_measurement: '%'
+    value_type: U_WORD
+    accuracy_decimals: 1
+    icon: mdi:percent
+    filters:
+      - multiply: 0.01
+
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_c_thdv
+    id: ${powermeter_name}_phase_c_thdv
+    register_type: holding
+    address: 0x0162
+    unit_of_measurement: '%'
+    value_type: U_WORD
+    accuracy_decimals: 1
+    icon: mdi:percent
+    filters:
+      - multiply: 0.01
+
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_a_thdi
+    id: ${powermeter_name}_phase_a_thdi
+    register_type: holding
+    address: 0x0163
+    unit_of_measurement: '%'
+    value_type: U_WORD
+    accuracy_decimals: 1
+    icon: mdi:percent
+    filters:
+      - multiply: 0.01
+
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_b_thdi
+    id: ${powermeter_name}_phase_b_thdi
+    register_type: holding
+    address: 0x0164
+    unit_of_measurement: '%'
+    value_type: U_WORD
+    accuracy_decimals: 1
+    icon: mdi:percent
+    filters:
+      - multiply: 0.01
+
+  - platform: modbus_controller
+    modbus_controller_id: ${powermeter_name}_modbus_controller
+    name: ${name}_${powermeter_name}_phase_c_thdi
+    id: ${powermeter_name}_phase_c_thdi
+    register_type: holding
+    address: 0x0165
+    unit_of_measurement: '%'
+    value_type: U_WORD
+    accuracy_decimals: 1
+    icon: mdi:percent
+    filters:
+      - multiply: 0.01

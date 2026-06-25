@@ -1,9 +1,16 @@
+# external_components:
+  # - source: "github://SeByDocKy/myESPhome/"
+    # components: [gp8403]
+    # refresh: 0s
+
+
 gp8403:
   - id: ${lsa_gp8403_name}_id
     voltage: 10V
     i2c_id: ${lsa_gp8403_i2c_id}
     address : ${lsa_gp8403_i2c_address}
- 
+    #gp8413: ${lsa_gp8403_gp8413}
+    model: ${lsa_gp8403_model}
 output:
   - platform: gp8403
     id: ${lsa_gp8403_name}_output
