@@ -1,11 +1,14 @@
-# Updated : 2024.05.21
-# Version : 1.0.0
+# Updated : 2026.06.16
+# Version : 1.0.2
 # GitHub  : https://github.com/Dackara/
 
 # This file allows you to hot change (without reflashing the ESP) the 
 # specifications of the 3 physical UART bus.
 
-# Currently parity change is not supported.
+esphome:
+  devices:
+    - id: uart_info_device
+      name: "Device UART Info"
 
 # https://esphome.io/components/uart#changing-at-runtime
 sensor:
@@ -13,18 +16,21 @@ sensor:
   - platform: template
     id: uart_esp_0_get_rx_buffer_size
     name: ${name}_uart_esp_0_get_rx_buffer_size
+    device_id: uart_info_device
     lambda: return id(uart_esp_0).get_rx_buffer_size();
     accuracy_decimals: 0
     entity_category: diagnostic
   - platform: template
     id: uart_esp_1_get_rx_buffer_size
     name: ${name}_uart_esp_1_get_rx_buffer_size
+    device_id: uart_info_device
     lambda: return id(uart_esp_1).get_rx_buffer_size();
     accuracy_decimals: 0
     entity_category: diagnostic
   - platform: template
     id: uart_esp_2_get_rx_buffer_size
     name: ${name}_uart_esp_2_get_rx_buffer_size
+    device_id: uart_info_device
     lambda: return id(uart_esp_2).get_rx_buffer_size();
     accuracy_decimals: 0
     entity_category: diagnostic
@@ -32,18 +38,21 @@ sensor:
   - platform: template
     id: uart_esp_0_get_stop_bits
     name: ${name}_uart_esp_0_get_stop_bits
+    device_id: uart_info_device
     lambda: return id(uart_esp_0).get_stop_bits();
     accuracy_decimals: 0
     entity_category: diagnostic
   - platform: template
     id: uart_esp_1_get_stop_bits
     name: ${name}_uart_esp_1_get_stop_bits
+    device_id: uart_info_device
     lambda: return id(uart_esp_1).get_stop_bits();
     accuracy_decimals: 0
     entity_category: diagnostic
   - platform: template
     id: uart_esp_2_get_stop_bits
     name: ${name}_uart_esp_2_get_stop_bits
+    device_id: uart_info_device
     lambda: return id(uart_esp_2).get_stop_bits();
     accuracy_decimals: 0
     entity_category: diagnostic
@@ -51,18 +60,21 @@ sensor:
   - platform: template
     id: uart_esp_0_get_data_bits
     name: ${name}_uart_esp_0_get_data_bits
+    device_id: uart_info_device
     lambda: return id(uart_esp_0).get_data_bits();
     accuracy_decimals: 0
     entity_category: diagnostic
   - platform: template
     id: uart_esp_1_get_data_bits
     name: ${name}_uart_esp_1_get_data_bits
+    device_id: uart_info_device
     lambda: return id(uart_esp_1).get_data_bits();
     accuracy_decimals: 0
     entity_category: diagnostic
   - platform: template
     id: uart_esp_2_get_data_bits
     name: ${name}_uart_esp_2_get_data_bits
+    device_id: uart_info_device
     lambda: return id(uart_esp_2).get_data_bits();
     accuracy_decimals: 0
     entity_category: diagnostic
@@ -70,18 +82,21 @@ sensor:
   - platform: template
     id: uart_esp_0_get_baud_rate
     name: ${name}_uart_esp_0_get_baud_rate
+    device_id: uart_info_device
     lambda: return id(uart_esp_0).get_baud_rate();
     accuracy_decimals: 0
     entity_category: diagnostic
   - platform: template
     id: uart_esp_1_get_baud_rate
     name: ${name}_uart_esp_1_get_baud_rate
+    device_id: uart_info_device
     lambda: return id(uart_esp_1).get_baud_rate();
     accuracy_decimals: 0
     entity_category: diagnostic
   - platform: template
     id: uart_esp_2_get_baud_rate
     name: ${name}_uart_esp_2_get_baud_rate
+    device_id: uart_info_device
     lambda: return id(uart_esp_2).get_baud_rate();
     accuracy_decimals: 0
     entity_category: diagnostic
@@ -89,6 +104,7 @@ sensor:
   - platform: template
     id: uart_esp_0_internal_get_parity
     name: ${name}_uart_esp_0_internal_get_parity
+    device_id: uart_info_device
     lambda: |-
       return id(uart_esp_0).get_parity();
     accuracy_decimals: 0
@@ -97,6 +113,7 @@ sensor:
   - platform: template
     id: uart_esp_1_internal_get_parity
     name: ${name}_uart_esp_1_internal_get_parity
+    device_id: uart_info_device
     lambda: |-
       return id(uart_esp_1).get_parity();
     accuracy_decimals: 0
@@ -105,6 +122,7 @@ sensor:
   - platform: template
     id: uart_esp_2_internal_get_parity
     name: ${name}_uart_esp_2_internal_get_parity
+    device_id: uart_info_device
     lambda: |-
       return id(uart_esp_2).get_parity();
     accuracy_decimals: 0
@@ -116,8 +134,7 @@ text_sensor:
   - platform: template
     id: uart_esp_0_get_parity
     name: ${name}_uart_esp_0_get_parity
-    # lambda: |-
-    #   return id(uart_esp_0).get_parity();
+    device_id: uart_info_device
     lambda: |-
       const int PARITY = id(uart_esp_0_internal_get_parity).state ;
       if (PARITY == 0) {return {"NONE"};}
@@ -128,6 +145,7 @@ text_sensor:
   - platform: template
     id: uart_esp_1_get_parity
     name: ${name}_uart_esp_1_get_parity
+    device_id: uart_info_device
     lambda: |-
       const int PARITY = id(uart_esp_1_internal_get_parity).state ;
       if (PARITY == 0) {return {"NONE"};}
@@ -138,6 +156,7 @@ text_sensor:
   - platform: template
     id: uart_esp_2_get_parity
     name: ${name}_uart_esp_2_get_parity
+    device_id: uart_info_device
     lambda: |-
       const int PARITY = id(uart_esp_2_internal_get_parity).state ;
       if (PARITY == 0) {return {"NONE"};}
@@ -150,6 +169,7 @@ select:
   # RX buffer size
   - id: uart_esp_0_change_rx_buffer_size
     name: ${name}_uart_esp_0_change_rx_buffer_size
+    device_id: uart_info_device
     platform: template
     options:
       - "256"
@@ -174,6 +194,7 @@ select:
           }
   - id: uart_esp_1_change_rx_buffer_size
     name: ${name}_uart_esp_1_change_rx_buffer_size
+    device_id: uart_info_device
     platform: template
     options:
       - "256"
@@ -198,6 +219,7 @@ select:
           }
   - id: uart_esp_2_change_rx_buffer_size
     name: ${name}_uart_esp_2_change_rx_buffer_size
+    device_id: uart_info_device
     platform: template
     options:
       - "256"
@@ -223,6 +245,7 @@ select:
   # Stop bits
   - id: uart_esp_0_change_stop_bits
     name: ${name}_uart_esp_0_change_stop_bits
+    device_id: uart_info_device
     platform: template
     options:
       - "1"
@@ -244,6 +267,7 @@ select:
           }
   - id: uart_esp_1_change_stop_bits
     name: ${name}_uart_esp_1_change_stop_bits
+    device_id: uart_info_device
     platform: template
     options:
       - "1"
@@ -265,6 +289,7 @@ select:
           }
   - id: uart_esp_2_change_stop_bits
     name: ${name}_uart_esp_2_change_stop_bits
+    device_id: uart_info_device
     platform: template
     options:
       - "1"
@@ -287,6 +312,7 @@ select:
   # Data bits
   - id: uart_esp_0_change_data_bits
     name: ${name}_uart_esp_0_change_data_bits
+    device_id: uart_info_device
     platform: template
     options:
       - "5"
@@ -310,6 +336,7 @@ select:
           }
   - id: uart_esp_1_change_data_bits
     name: ${name}_uart_esp_1_change_data_bits
+    device_id: uart_info_device
     platform: template
     options:
       - "5"
@@ -333,6 +360,7 @@ select:
           }
   - id: uart_esp_2_change_data_bits
     name: ${name}_uart_esp_2_change_data_bits
+    device_id: uart_info_device
     platform: template
     options:
       - "5"
@@ -355,75 +383,89 @@ select:
             id(uart_esp_2).load_settings();
           }
   # # Parity
-  # - id: uart_esp_0_change_parity
-  #   name: ${name}_uart_esp_0_change_parity
-  #   platform: template
-  #   options:
-  #     - "NONE"
-  #     - "EVEN"
-  #     - "ODD"
-  #   initial_option: "NONE"
-  #   optimistic: true
-  #   restore_value: True
-  #   internal: false
-  #   entity_category: config
-  #   icon: mdi:swap-horizontal
-  #   set_action:
-  #     - lambda: |-
-  #         id(uart_esp_0).flush();
-  #         UARTParityOptions new_parity = stoi(x);
-  #         ESP_LOGD("change_parity", "Changing baud rate from %i to %i",id(uart_esp_0).get_parity(), new_parity);
-  #         if (id(uart_esp_0).get_parity() != new_parity) {
-  #           id(uart_esp_0).set_parity(new_parity);
-  #           id(uart_esp_0).load_settings();
-  #         }
-  # - id: uart_esp_1_change_parity
-  #   name: ${name}_uart_esp_1_change_parity
-  #   platform: template
-  #   options:
-  #     - "NONE"
-  #     - "EVEN"
-  #     - "ODD"
-  #   initial_option: "NONE"
-  #   optimistic: true
-  #   restore_value: True
-  #   internal: false
-  #   entity_category: config
-  #   icon: mdi:swap-horizontal
-  #   set_action:
-  #     - lambda: |-
-  #         id(uart_esp_1).flush();
-  #         UARTParityOptions new_parity = stoi(x);
-  #         ESP_LOGD("change_parity", "Changing baud rate from %i to %i",id(uart_esp_1).get_parity(), new_parity);
-  #         if (id(uart_esp_1).get_parity() != new_parity) {
-  #           id(uart_esp_1).set_parity(new_parity);
-  #           id(uart_esp_1).load_settings();
-  #         }
-  # - id: uart_esp_2_change_parity
-  #   name: ${name}_uart_esp_2_change_parity
-  #   platform: template
-  #   options:
-  #     - "NONE"
-  #     - "EVEN"
-  #     - "ODD"
-  #   initial_option: "NONE"
-  #   optimistic: true
-  #   restore_value: True
-  #   internal: false
-  #   entity_category: config
-  #   icon: mdi:swap-horizontal
-  #   set_action:
-  #     - lambda: |-
-  #         id(uart_esp_2).flush();
-  #         UARTParityOptions new_parity = stoi(x);
-  #         ESP_LOGD("change_parity", "Changing baud rate from %i to %i",id(uart_esp_2).get_parity(), new_parity);
-  #         if (id(uart_esp_2).get_parity() != new_parity) {
-  #           id(uart_esp_2).set_parity(new_parity);
-  #           id(uart_esp_2).load_settings();
-  #         }
+  - id: uart_esp_0_change_parity
+    name: ${name}_uart_esp_0_change_parity
+    device_id: uart_info_device
+    platform: template
+    options:
+      - "NONE"
+      - "EVEN"
+      - "ODD"
+    initial_option: "NONE"
+    optimistic: true
+    restore_value: True
+    internal: false
+    entity_category: config
+    icon: mdi:swap-horizontal
+    set_action:
+      - lambda: |-
+          id(uart_esp_0).flush();
+          auto opt_index = id(uart_esp_0_change_parity).index_of(x);
+          if (!opt_index.has_value()) {
+            ESP_LOGW("change_parity", "Option invalide: %s", x.c_str());
+            return;
+          }
+          auto new_parity = static_cast<esphome::uart::UARTParityOptions>(opt_index.value());
+          ESP_LOGI("change_parity", "Parité UART changée: %d → %d", id(uart_esp_0).get_parity(), new_parity);
+          id(uart_esp_0).set_parity(new_parity);
+          id(uart_esp_0).load_settings();
+  - id: uart_esp_1_change_parity
+    name: ${name}_uart_esp_1_change_parity
+    device_id: uart_info_device
+    platform: template
+    options:
+      - "NONE"
+      - "EVEN"
+      - "ODD"
+    initial_option: "NONE"
+    optimistic: true
+    restore_value: True
+    internal: false
+    entity_category: config
+    icon: mdi:swap-horizontal
+    set_action:
+      - lambda: |-
+          id(uart_esp_1).flush();
+          auto opt_index = id(uart_esp_1_change_parity).index_of(x);
+          if (!opt_index.has_value()) {
+            ESP_LOGW("change_parity", "Option invalide: %s", x.c_str());
+            return;
+          }
+          auto new_parity = static_cast<esphome::uart::UARTParityOptions>(opt_index.value());
+          ESP_LOGI("change_parity", "Parité UART changée: %d → %d", id(uart_esp_1).get_parity(), new_parity);
+          id(uart_esp_1).set_parity(new_parity);
+          id(uart_esp_1).load_settings();
+  - id: uart_esp_2_change_parity
+    name: ${name}_uart_esp_2_change_parity
+    device_id: uart_info_device
+    platform: template
+    options:
+      - "NONE"
+      - "EVEN"
+      - "ODD"
+    initial_option: "NONE"
+    optimistic: true
+    restore_value: True
+    internal: false
+    entity_category: config
+    icon: mdi:swap-horizontal
+    set_action:
+      - lambda: |-
+          id(uart_esp_2).flush();
+          auto opt_index = id(uart_esp_2_change_parity).index_of(x);
+          if (!opt_index.has_value()) {
+            ESP_LOGW("change_parity", "Option invalide: %s", x.c_str());
+            return;
+          }
+          auto new_parity = static_cast<esphome::uart::UARTParityOptions>(opt_index.value());
+          ESP_LOGI("change_parity", "Parité UART changée: %d → %d", id(uart_esp_2).get_parity(), new_parity);
+          id(uart_esp_2).set_parity(new_parity);
+          id(uart_esp_2).load_settings();
+        
   # Baud rate
   - id: uart_esp_0_change_baud_rate
     name: ${name}_uart_esp_0_change_baud_rate
+    device_id: uart_info_device
     platform: template
     options:
       - "1200"
@@ -452,6 +494,7 @@ select:
           }
   - id: uart_esp_1_change_baud_rate
     name: ${name}_uart_esp_1_change_baud_rate
+    device_id: uart_info_device
     platform: template
     options:
       - "1200"
@@ -480,6 +523,7 @@ select:
           }
   - id: uart_esp_2_change_baud_rate
     name: ${name}_uart_esp_2_change_baud_rate
+    device_id: uart_info_device
     platform: template
     options:
       - "1200"

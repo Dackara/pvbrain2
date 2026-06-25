@@ -1,5 +1,12 @@
-# Updated : 2024.05.17
-# Version : 1.0.0
+#    ________                        __  ___     __ 
+#   / ____/ /___  ____ ___  ____    /  |/  /__ _/ /____  _____ 
+#  / /   / / __ `/ __ `__ \/ __ \  / /|_/ / _ \/ __/ _ \/ ___/
+# / /___/ / /_/ / / / / / / /_/ / / /  / /  __/ /_/  __/ /
+# \____/_/\__,_/_/ /_/ /_/ .___/ /_/  /_/\___/\__/\___/_/
+#                       /_/
+
+# Updated : 2026.06.14
+# Version : 1.0.1
 # GitHub  : https://github.com/Dackara/
 
 sensor:
@@ -7,6 +14,7 @@ sensor:
   - platform: ads1115
     id: ${clamp_name}_adc_sensor
     name: ${name}_${clamp_name}_adc_sensor
+    device_id: clamp_meter
     ads1115_id: ${clamp_ads1115_hub}
     multiplexer: ${clamp_multiplexer}
     gain: ${clamp_gain}
@@ -16,8 +24,9 @@ sensor:
 
 # https://esphome.io/components/sensor/ct_clamp
   - platform: ct_clamp
-    name: ${name}_${clamp_name}
     id: ${clamp_name}
+    name: ${name}_${clamp_name}
+    device_id: clamp_meter
     sensor: ${clamp_name}_adc_sensor
     accuracy_decimals: 3
     update_interval: ${clamp_update_interval}

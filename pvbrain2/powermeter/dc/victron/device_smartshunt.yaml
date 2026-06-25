@@ -1,3 +1,11 @@
+# Updated : 2026.06.15
+# Version : 1.0.1
+
+esphome:
+  devices:
+    - id: ${powermeter_name}_device
+      name: "Powermeter ${powermeter_name}"
+
 external_components:
 #  - source: github://KinDR007/VictronSmartShunt-ESPHOME@main
 #    refresh: 0s
@@ -37,8 +45,9 @@ time:
 
 sensor:
   - platform: template
-    name: ${name}_${powermeter_name}_battery_charging_power
     id: ${powermeter_name}_battery_charging_power
+    name: ${name}_${powermeter_name}_battery_charging_power
+    device_id: ${powermeter_name}_device
     unit_of_measurement: 'W'
     device_class: 'power'
     accuracy_decimals: 1
@@ -53,12 +62,13 @@ sensor:
       }  
   
   - platform: total_daily_energy
+    id: ${powermeter_name}_battery_charging_energy_today
     name: ${name}_${powermeter_name}_battery_charging_energy_today
+    device_id: ${powermeter_name}_device
     power_id: ${powermeter_name}_battery_charging_power
     unit_of_measurement: 'kWh'
     device_class: 'energy'
     accuracy_decimals: 1
-    id: ${powermeter_name}_battery_charging_energy_today
     method: trapezoid
     filters:
        # Multiplication factor from W to kW is 0.001
@@ -66,8 +76,9 @@ sensor:
     icon: mdi:counter
     
   - platform: template
-    name: ${name}_${powermeter_name}_battery_charging_energy_yesterday
     id: ${powermeter_name}_battery_charging_energy_yesterday
+    name: ${name}_${powermeter_name}_battery_charging_energy_yesterday
+    device_id: ${powermeter_name}_device
     unit_of_measurement: 'kWh'
     device_class: 'energy'
     accuracy_decimals: 1
@@ -77,8 +88,9 @@ sensor:
       return ( id(${powermeter_name}_battery_charging_energy_yesterday).state = id(${powermeter_name}_battery_charging_energy_yesterday_global) );    
   
   - platform: template
-    name: ${name}_${powermeter_name}_battery_discharging_power
     id: ${powermeter_name}_battery_discharging_power
+    name: ${name}_${powermeter_name}_battery_discharging_power
+    device_id: ${powermeter_name}_device
     unit_of_measurement: 'W'
     device_class: 'power'
     accuracy_decimals: 1
@@ -93,12 +105,13 @@ sensor:
       }  
   
   - platform: total_daily_energy
+    id: ${powermeter_name}_battery_discharging_energy_today
     name: ${name}_${powermeter_name}_battery_discharging_energy_today
+    device_id: ${powermeter_name}_device
     power_id: ${powermeter_name}_battery_discharging_power
     unit_of_measurement: 'kWh'
     device_class: 'energy'
     accuracy_decimals: 1
-    id: ${powermeter_name}_battery_discharging_energy_today
     method: trapezoid
     filters:
        # Multiplication factor from W to kW is 0.001
@@ -106,8 +119,9 @@ sensor:
     icon: mdi:counter
     
   - platform: template
-    name: ${name}_${powermeter_name}_battery_discharging_energy_yesterday
     id: ${powermeter_name}_battery_discharging_energy_yesterday
+    name: ${name}_${powermeter_name}_battery_discharging_energy_yesterday
+    device_id: ${powermeter_name}_device
     unit_of_measurement: 'kWh'
     device_class: 'energy'
     accuracy_decimals: 1
@@ -121,53 +135,63 @@ sensor:
     victron_smart_shunt_id: ${powermeter_name}_smart_shunt
 #    id: ${powermeter_name}
     battery_voltage:
-      name: ${name}_${powermeter_name}_battery_voltage
       id: ${powermeter_name}_battery_voltage
+      name: ${name}_${powermeter_name}_battery_voltage
+      device_id: ${powermeter_name}_device
       accuracy_decimals: 2
 
     battery_current:
-      name: ${name}_${powermeter_name}_battery_current
       id: ${powermeter_name}_battery_current
+      name: ${name}_${powermeter_name}_battery_current
+      device_id: ${powermeter_name}_device
       accuracy_decimals: 2
       icon: mdi:current-dc
 
     # fw_version:
       # name: ${name}_${powermeter_name}_fw_version
       # id: ${powermeter_name}_fw_version
+      # device_id: ${powermeter_name}_device
 
     # pid:
       # name: ${name}_${powermeter_name}_pid
       # id: ${powermeter_name}_pid
+      # device_id: ${powermeter_name}_device
 
     instantaneous_power:
-      name: ${name}_${powermeter_name}_battery_power
       id: ${powermeter_name}_instantaneous_power
+      name: ${name}_${powermeter_name}_battery_power
+      device_id: ${powermeter_name}_device
       accuracy_decimals: 2
 
     time_to_go:
-      name: ${name}_${powermeter_name}_time_to_go
       id: ${powermeter_name}_time_to_go
+      name: ${name}_${powermeter_name}_time_to_go
+      device_id: ${powermeter_name}_device
 
     consumed_amp_hours:
-      name: ${name}_${powermeter_name}_consumed_amp_hours
       id: ${powermeter_name}_consumed_amp_hours
-      unit_of_measurement: 'Ah'
+      name: ${name}_${powermeter_name}_consumed_amp_hours
+      device_id: ${powermeter_name}_device
       device_class: 'energy'
+      unit_of_measurement: 'Ah'
       accuracy_decimals: 1
 
     min_battery_voltage:
-      name: ${name}_${powermeter_name}_min_battery_voltage
       id: ${powermeter_name}_min_battery_voltage
+      name: ${name}_${powermeter_name}_min_battery_voltage
+      device_id: ${powermeter_name}_device
       accuracy_decimals: 2
 
     max_battery_voltage:
-      name: ${name}_${powermeter_name}_max_battery_voltage
       id: ${powermeter_name}_max_battery_voltage
+      name: ${name}_${powermeter_name}_max_battery_voltage
+      device_id: ${powermeter_name}_device
       accuracy_decimals: 2
 
     amount_of_charged:
-      name: ${name}_${powermeter_name}_amount_of_charged
       id: ${powermeter_name}_amount_of_charged
+      name: ${name}_${powermeter_name}_amount_of_charged
+      device_id: ${powermeter_name}_device
       filters:
         - multiply: 0.001
       unit_of_measurement: 'kWh'
@@ -183,33 +207,38 @@ sensor:
       # id: ${powermeter_name}_bmv_text
 
     last_full_charge:
-      name: ${name}_${powermeter_name}_last_full_charge
       id: ${powermeter_name}_last_full_charge
+      name: ${name}_${powermeter_name}_last_full_charge
+      device_id: ${powermeter_name}_device
 
     deepest_discharge:
-      name: ${name}_${powermeter_name}_deepest_discharge
       id: ${powermeter_name}_deepest_discharge
-      unit_of_measurement: 'Ah'
+      name: ${name}_${powermeter_name}_deepest_discharge
+      device_id: ${powermeter_name}_device
       device_class: 'energy_storage'
+      unit_of_measurement: 'Ah'
       accuracy_decimals: 1
 
     last_discharge:
-      name: ${name}_${powermeter_name}_last_discharge
       id: ${powermeter_name}_last_discharge
-      unit_of_measurement: 'Ah'
+      name: ${name}_${powermeter_name}_last_discharge
+      device_id: ${powermeter_name}_device
       device_class: 'energy_storage'
+      unit_of_measurement: 'Ah'
       accuracy_decimals: 1
 
     discharged_energy:
-      name: ${name}_${powermeter_name}_discharged_energy
       id: ${powermeter_name}_discharged_energy
+      name: ${name}_${powermeter_name}_discharged_energy
+      device_id: ${powermeter_name}_device
+      device_class: 'energy_storage'
+      unit_of_measurement: 'kWh'
       filters:
         - multiply: 0.001
-      unit_of_measurement: 'kWh'
-      device_class: 'energy_storage'
       accuracy_decimals: 1
       icon: mdi:counter
 
     state_of_charge:
-      name: ${name}_${powermeter_name}_soc
       id: ${powermeter_name}_soc
+      name: ${name}_${powermeter_name}_soc
+      device_id: ${powermeter_name}_device

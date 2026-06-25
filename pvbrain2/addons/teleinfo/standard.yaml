@@ -1,5 +1,12 @@
-# Updated : 2024.05.17
-# Version : 1.0.0
+#    __    _       __           ______   __     _       ____        _____ _ _           __
+#   / /   (_)___  / /____  __  /_  __/  / /__  (_)___  / __/___    / ____/ (_)__  ____ / /_
+#  / /   / / __ \/ //_/ / / /   / / _ \/ / _ \/ / __ \/ /_/ __ \  / /   / / / _ \/ __ \ __/
+# / /___/ / / / / ,< / /_/ /   / /  __/ /  __/ / / / / __/ /_/ / / /___/ / /  __/ / / / /_  
+#/_____/_/_/ /_/_/|_|\__, /   /_/\___/_/\___/_/_/ /_/_/  \____/  \____/_/_/\___/_/ /_/\__/  
+#                   /____/   
+
+# Updated : 2026.06.14
+# Version : 1.0.1
 # GitHub  : https://github.com/Dackara/
 
 # https://esphome.io/components/sensor/teleinfo.html
@@ -9,12 +16,18 @@ teleinfo:
     update_interval: ${linky_update_interval}
     historical_mode: false
     
+esphome:
+  devices:
+    - id: linky_device
+      name: "Linky TeleInfo Client"
+    
 # https://esphome.io/components/sensor/index.html
 sensor:
   # Énergie active soutirée totale
   - platform: teleinfo
     tag_name: "EAST"
-    name: ${name}_${linky_name}_energie_soutirée
+    name: ${name}_${linky_name}_energie_soutiree
+    device_id: linky_device
     unit_of_measurement: kWh
     device_class: energy
     state_class: total_increasing
@@ -25,7 +38,8 @@ sensor:
   # Energie active soutirée Fournisseur, index 01
   - platform: teleinfo
     tag_name: "EASF01"
-    name: ${name}_${linky_name}_energie_soutirée_tempo_bleu_hc
+    name: ${name}_${linky_name}_energie_soutiree_tempo_bleu_hc
+    device_id: linky_device
     unit_of_measurement: kWh
     device_class: energy
     state_class: total_increasing
@@ -36,7 +50,8 @@ sensor:
   # Energie active soutirée Fournisseur, index 02
   - platform: teleinfo
     tag_name: "EASF02"
-    name: ${name}_${linky_name}_energie_soutirée_tempo_bleu_hp
+    name: ${name}_${linky_name}_energie_soutiree_tempo_bleu_hp
+    device_id: linky_device
     unit_of_measurement: kWh
     device_class: energy
     state_class: total_increasing
@@ -47,7 +62,8 @@ sensor:
   # Energie active soutirée Fournisseur, index 03
   - platform: teleinfo
     tag_name: "EASF03"
-    name: ${name}_${linky_name}_energie_soutirée_tempo_blanc_hc
+    name: ${name}_${linky_name}_energie_soutiree_tempo_blanc_hc
+    device_id: linky_device
     unit_of_measurement: kWh
     device_class: energy
     state_class: total_increasing
@@ -58,7 +74,8 @@ sensor:
   # Energie active soutirée Fournisseur, index 04
   - platform: teleinfo
     tag_name: "EASF04"
-    name: ${name}_${linky_name}_energie_soutirée_tempo_blanc_hp
+    name: ${name}_${linky_name}_energie_soutiree_tempo_blanc_hp
+    device_id: linky_device
     unit_of_measurement: kWh
     device_class: energy
     state_class: total_increasing
@@ -69,7 +86,8 @@ sensor:
   # Energie active soutirée Fournisseur, index 05
   - platform: teleinfo
     tag_name: "EASF05"
-    name: ${name}_${linky_name}_energie_soutirée_tempo_rouge_hc
+    name: ${name}_${linky_name}_energie_soutiree_tempo_rouge_hc
+    device_id: linky_device
     unit_of_measurement: kWh
     device_class: energy
     state_class: total_increasing
@@ -80,7 +98,8 @@ sensor:
   # Energie active soutirée Fournisseur, index 06
   - platform: teleinfo
     tag_name: "EASF06"
-    name: ${name}_${linky_name}_energie_soutirée_tempo_rouge_hp
+    name: ${name}_${linky_name}_energie_soutiree_tempo_rouge_hp
+    device_id: linky_device
     unit_of_measurement: kWh
     device_class: energy
     state_class: total_increasing
@@ -91,7 +110,8 @@ sensor:
   # Energie active soutirée Fournisseur, index 07
   - platform: teleinfo
     tag_name: "EASF07"
-    name: ${name}_${linky_name}_Energie_soutirée_f07
+    name: ${name}_${linky_name}_energie_soutiree_f07
+    device_id: linky_device
     unit_of_measurement: kWh
     device_class: energy
     state_class: total_increasing
@@ -102,7 +122,8 @@ sensor:
   # Energie active soutirée Fournisseur, index 08
   - platform: teleinfo
     tag_name: "EASF08"
-    name: ${name}_${linky_name}_energie_soutirée_f08
+    name: ${name}_${linky_name}_energie_soutiree_f08
+    device_id: linky_device
     unit_of_measurement: kWh
     device_class: energy
     state_class: total_increasing
@@ -113,7 +134,8 @@ sensor:
   # Energie active soutirée Fournisseur, index 09
   - platform: teleinfo
     tag_name: "EASF09"
-    name: ${name}_${linky_name}_energie_soutirée_f09
+    name: ${name}_${linky_name}_energie_soutiree_f09
+    device_id: linky_device
     unit_of_measurement: kWh
     device_class: energy
     state_class: total_increasing
@@ -124,7 +146,8 @@ sensor:
   # Energie active soutirée Fournisseur, index 10
   - platform: teleinfo
     tag_name: "EASF10"
-    name: ${name}_${linky_name}_energie_soutirée_f10
+    name: ${name}_${linky_name}_energie_soutiree_f10
+    device_id: linky_device
     unit_of_measurement: kWh
     device_class: energy
     state_class: total_increasing
@@ -135,7 +158,8 @@ sensor:
   # Energie active soutirée Distributeur, index 01
   - platform: teleinfo
     tag_name: "EASD01"
-    name: ${name}_${linky_name}_energie_soutirée_d01
+    name: ${name}_${linky_name}_energie_soutiree_d01
+    device_id: linky_device
     unit_of_measurement: kWh
     device_class: energy
     state_class: total_increasing
@@ -146,7 +170,8 @@ sensor:
   # Energie active soutirée Distributeur, index 02
   - platform: teleinfo
     tag_name: "EASD02"
-    name: ${name}_${linky_name}_energie_soutirée_d02
+    name: ${name}_${linky_name}_energie_soutiree_d02
+    device_id: linky_device
     unit_of_measurement: kWh
     device_class: energy
     state_class: total_increasing
@@ -157,7 +182,8 @@ sensor:
   # Energie active soutirée Distributeur, index 03
   - platform: teleinfo
     tag_name: "EASD03"
-    name: ${name}_${linky_name}_energie_soutirée_d03
+    name: ${name}_${linky_name}_energie_soutiree_d03
+    device_id: linky_device
     unit_of_measurement: kWh
     device_class: energy
     state_class: total_increasing
@@ -168,7 +194,8 @@ sensor:
   # Energie active soutirée Distributeur, index 04
   - platform: teleinfo
     tag_name: "EASD04"
-    name: ${name}_${linky_name}_energie_soutirée_d04
+    name: ${name}_${linky_name}_energie_soutiree_d04
+    device_id: linky_device
     unit_of_measurement: kWh
     device_class: energy
     state_class: total_increasing
@@ -179,7 +206,8 @@ sensor:
   # Courant Efficace, phase 1
   - platform: teleinfo
     tag_name: "IRMS1"
-    name: ${name}_${linky_name}_Courant_efficace
+    name: ${name}_${linky_name}_courant_efficace
+    device_id: linky_device
     unit_of_measurement: A
     device_class: current
     state_class: measurement
@@ -187,14 +215,16 @@ sensor:
   # Tension Efficace, phase 1
   - platform: teleinfo
     tag_name: "URMS1"
-    name: ${name}_${linky_name}_Tension_efficace
+    name: ${name}_${linky_name}_tension_efficace
+    device_id: linky_device
     unit_of_measurement: V
     device_class: voltage
     state_class: measurement
   # Puissance app. de référence
   - platform: teleinfo
     tag_name: "PREF"
-    name: ${name}_${linky_name}_puissance_apparente_référence
+    name: ${name}_${linky_name}_puissance_apparente_reference
+    device_id: linky_device
     state_class: measurement
     device_class: apparent_power
     unit_of_measurement: VA
@@ -205,6 +235,7 @@ sensor:
   - platform: teleinfo
     tag_name: "PCOUP"
     name: ${name}_${linky_name}_puissance_apparente_coupure
+    device_id: linky_device
     state_class: measurement
     device_class: apparent_power
     unit_of_measurement: VA
@@ -214,7 +245,8 @@ sensor:
   # Puissance app. Instantanée Soutirée
   - platform: teleinfo
     tag_name: "SINSTS"
-    name: ${name}_${linky_name}_puissance_apparente_instantanée_soutirée
+    name: ${name}_${linky_name}_puissance_apparente_instantanee_soutiree
+    device_id: linky_device
     unit_of_measurement: VA
     state_class: measurement
     device_class: apparent_power
@@ -222,7 +254,8 @@ sensor:
   # Puissance app. max. soutirée
   - platform: teleinfo
     tag_name: "SMAXSN"
-    name: ${name}_${linky_name}_puissance_apparente_maximale_soutirée
+    name: ${name}_${linky_name}_puissance_apparente_maximale_soutiree
+    device_id: linky_device
     unit_of_measurement: VA
     state_class: measurement
     device_class: apparent_power
@@ -230,14 +263,16 @@ sensor:
   # Point n de la courbe de charge active soutirée
   - platform: teleinfo
     tag_name: "CCASN"
-    name: ${name}_${linky_name}_puissance_active_soutirée
+    name: ${name}_${linky_name}_puissance_active_soutiree
+    device_id: linky_device
     unit_of_measurement: W
     state_class: measurement
     device_class: power
   # Point n-1 de la courbe de charge active soutirée
   - platform: teleinfo
     tag_name: "CCASN-1"
-    name: ${name}_${linky_name}_puissance_active_soutirée_n-1
+    name: ${name}_${linky_name}_puissance_active_soutiree_n-1
+    device_id: linky_device
     unit_of_measurement: W
     state_class: measurement
     device_class: power
@@ -245,6 +280,7 @@ sensor:
   - platform: teleinfo
     tag_name: "UMOY1"
     name: ${name}_${linky_name}_tension_moyenne
+    device_id: linky_device
     unit_of_measurement: V
     device_class: voltage
     state_class: measurement
@@ -257,6 +293,7 @@ sensor:
   - platform: teleinfo
     tag_name: "IRMS2"
     name: ${name}_${linky_name}_courant_efficace_phase_2
+    device_id: linky_device
     unit_of_measurement: A
     device_class: current
     state_class: measurement
@@ -265,6 +302,7 @@ sensor:
   - platform: teleinfo
     tag_name: "IRMS3"
     name: ${name}_${linky_name}_courant_efficace_phase_3
+    device_id: linky_device
     unit_of_measurement: A
     device_class: current
     state_class: measurement
@@ -273,6 +311,7 @@ sensor:
   - platform: teleinfo
     tag_name: "URMS2"
     name: ${name}_${linky_name}_tension_efficace_phase_2
+    device_id: linky_device
     unit_of_measurement: V
     device_class: voltage
     state_class: measurement
@@ -280,13 +319,15 @@ sensor:
   - platform: teleinfo
     tag_name: "URMS3"
     name: ${name}_${linky_name}_tension_efficace_phase_3
+    device_id: linky_device
     unit_of_measurement: V
     device_class: voltage
     state_class: measurement
   # Puissance app. Instantanée Soutirée, phase 1
   - platform: teleinfo
     tag_name: "SINSTS1"
-    name: ${name}_${linky_name}_puissance_apparente_instantanée_soutirée_phase_1
+    name: ${name}_${linky_name}_puissance_apparente_instantanee_soutiree_phase_1
+    device_id: linky_device
     unit_of_measurement: VA
     state_class: measurement
     device_class: apparent_power
@@ -294,7 +335,8 @@ sensor:
   # Puissance app. Instantanée Soutirée, phase 2
   - platform: teleinfo
     tag_name: "SINSTS2"
-    name: ${name}_${linky_name}_puissance_apparente_instantanée_soutirée_phase_2
+    name: ${name}_${linky_name}_puissance_apparente_instantanee_soutiree_phase_2
+    device_id: linky_device
     unit_of_measurement: VA
     state_class: measurement
     device_class: apparent_power
@@ -302,7 +344,8 @@ sensor:
   # Puissance app. Instantanée Soutirée, phase 3
   - platform: teleinfo
     tag_name: "SINSTS3"
-    name: ${name}_${linky_name}_puissance_apparente_instantanée_soutirée_phase_3
+    name: ${name}_${linky_name}_puissance_apparente_instantanee_soutiree_phase_3
+    device_id: linky_device
     unit_of_measurement: VA
     state_class: measurement
     device_class: apparent_power
@@ -310,7 +353,8 @@ sensor:
   # Puissance app. max. Soutirée, phase 1
   - platform: teleinfo
     tag_name: "SMAXSN1"
-    name: ${name}_${linky_name}_puissance_apparente_maximale_soutirée_phase_1
+    name: ${name}_${linky_name}_puissance_apparente_maximale_soutiree_phase_1
+    device_id: linky_device
     unit_of_measurement: VA
     state_class: measurement
     device_class: apparent_power
@@ -318,7 +362,8 @@ sensor:
   # Puissance app. max. Soutirée, phase 2
   - platform: teleinfo
     tag_name: "SMAXSN2"
-    name: ${name}_${linky_name}_puissance_apparente_maximale_soutirée_phase_2
+    name: ${name}_${linky_name}_puissance_apparente_maximale_soutiree_phase_2
+    device_id: linky_device
     unit_of_measurement: VA
     state_class: measurement
     device_class: apparent_power
@@ -326,7 +371,8 @@ sensor:
   # Puissance app. max. Soutirée, phase 3
   - platform: teleinfo
     tag_name: "SMAXSN3"
-    name: ${name}_${linky_name}_puissance_apparente_maximale_soutirée_phase_3
+    name: ${name}_${linky_name}_puissance_apparente_maximale_soutiree_phase_3
+    device_id: linky_device
     unit_of_measurement: VA
     state_class: measurement
     device_class: apparent_power
@@ -335,6 +381,7 @@ sensor:
   - platform: teleinfo
     tag_name: "UMOY2"
     name: ${name}_${linky_name}_tension_moyenne_phase_2
+    device_id: linky_device
     unit_of_measurement: V
     device_class: voltage
     state_class: measurement
@@ -342,6 +389,7 @@ sensor:
   - platform: teleinfo
     tag_name: "UMOY3"
     name: ${name}_${linky_name}_tension_moyenne_phase_3
+    device_id: linky_device
     unit_of_measurement: V
     device_class: voltage
     state_class: measurement 
@@ -353,7 +401,8 @@ sensor:
   # Energie active injectée totale
   - platform: teleinfo
     tag_name: "EAIT"
-    name: ${name}_${linky_name}_energie_injectée
+    name: ${name}_${linky_name}_energie_injectee
+    device_id: linky_device
     unit_of_measurement: kWh
     device_class: energy
     state_class: total_increasing
@@ -364,7 +413,8 @@ sensor:
   # Puissance app. Instantanée Injectée
   - platform: teleinfo
     tag_name: "SINSTI"
-    name: ${name}_${linky_name}_puissance_apparente_instantanée_injectée
+    name: ${name}_${linky_name}_puissance_apparente_instantanee_injectee
+    device_id: linky_device
     unit_of_measurement: VA
     state_class: measurement
     device_class: apparent_power
@@ -372,7 +422,8 @@ sensor:
   # Puissance app. maximale Injectée
   - platform: teleinfo
     tag_name: "SMAXIN"
-    name: ${name}_${linky_name}_puissance_apparente_maximale_injectée
+    name: ${name}_${linky_name}_puissance_apparente_maximale_injectee
+    device_id: linky_device
     unit_of_measurement: VA
     state_class: measurement
     device_class: apparent_power
@@ -380,14 +431,16 @@ sensor:
   # Point n de la courbe de charge active injectée
   - platform: teleinfo
     tag_name: "CCAIN"
-    name: ${name}_${linky_name}_puissance_active_injectée
+    name: ${name}_${linky_name}_puissance_active_injectee
+    device_id: linky_device
     unit_of_measurement: W
     state_class: measurement
     device_class: power
   # Point n-1 de la courbe de charge active injectée
   - platform: teleinfo
     tag_name: "CCAIN-1"
-    name: ${name}_${linky_name}_puissance_active_injectée_n-1
+    name: ${name}_${linky_name}_puissance_active_injectee_n-1
+    device_id: linky_device
     unit_of_measurement: W
     state_class: measurement
     device_class: power
@@ -398,34 +451,42 @@ text_sensor:
   - platform: teleinfo
     tag_name: "ADSC"
     name: ${name}_${linky_name}_adresse_secondaire
+    device_id: linky_device
   # Nom du calendrier tarifaire fournisseur
   - platform: teleinfo
     tag_name: "NGTF"
     name: ${name}_${linky_name}_calendrier_tarifaire
+    device_id: linky_device
     icon: mdi:information
   # Libellé tarif fournisseur en cours
   - platform: teleinfo
     tag_name: "LTARF"
     name: ${name}_${linky_name}_tarif_actuel
+    device_id: linky_device
     icon: mdi:information
   # Registre de Statuts
   - platform: teleinfo
     tag_name: "STGE"
     name: ${name}_${linky_name}_registre_de_statuts
+    device_id: linky_device
     icon: mdi:information
   # Message court
   - platform: teleinfo
     tag_name: "MSG1"
     name: ${name}_${linky_name}_message_court
+    device_id: linky_device
   # Message Ultra court
   - platform: teleinfo
     tag_name: "MSG2"
     name: ${name}_${linky_name}_message_ultra_court
+    device_id: linky_device
   # PRM
   - platform: teleinfo
     tag_name: "PRM"
     name: ${name}_${linky_name}_prm
+    device_id: linky_device
   # Relais
   - platform: teleinfo
     tag_name: "RELAIS"
     name: ${name}_${linky_name}_relais
+    device_id: linky_device

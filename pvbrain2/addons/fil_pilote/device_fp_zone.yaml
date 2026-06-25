@@ -1,17 +1,11 @@
-#######################################################################################
-#                                                                                     #
-#   WWWWWWW#WWWWWW-=WW@         #WWWWWW* =WWWWWW #WW#    -#WWWWW@-*WWWWWWWW:WWWWWWW   #
-#   WWW:-::  @WW*  =WW@         #WW#:#WW=  WWW*  #WW#    #WW#-#WW@-:-@WW=-:-WWW+--:   #
-#   WWW-     @WW*  =WW@         #WW= *WW=  WWW*  #WW#    @WW= *WW@   @WW=  -WWW:      #
-#   WWW*+++- @WW*  =WW@         #WW#=WWW=  WWW*  #WW#    @WW= *WW@   @WW= -*WWW=+++   #
-#   WWWWWWW- @WW*  =WW@:WW=     #WWWWW+    WWW*  #WW# WW @WW= *WW@   @WW=  *WWWWWWW   #
-#   WWW-     @WW=- =WW@*WW#     #WW#      -WWW*- #WW@ WW #WW@:#WW@   @WW=  -WWW*___   #
-#   WWW-   :WWWWWW-=WWWWWW@     #WW=     +WWWWWW #WWWWWW. =WWWWW#    @WW=  -WWWWWWW   #
-#                                                                                     #
-#######################################################################################
+#    _______ __   ____  _ __      __
+#   / ____(_) /  / __ \(_) /___  / /____
+#  / /_  / / /  / /_/ / / / __ \/ __/ _ \
+# / __/ / / /  / ____/ / / /_/ / /_/  __/
+#/_/   /_/_/  /_/   /_/_/\____/\__/\___/
 
-# Updated : 2024.05.17
-# Version : 1.0.0
+# Updated : 2026.06.15
+# Version : 1.0.1
 # GitHub  : https://github.com/Dackara/
 
 esphome:
@@ -43,21 +37,26 @@ output:
     
 switch:
   - platform: output
-    name: '${name}_${fpilote_id}_${fpilote_pos_pin}'
-    output: ${fpilote_hub}_output_${fpilote_pos_pin}
     id: ${fpilote_id}_${fpilote_pos_pin}
+    name: '${name}_${fpilote_id}_${fpilote_pos_pin}'
+    device_id: fil_pilote_device
+    output: ${fpilote_hub}_output_${fpilote_pos_pin}
     disabled_by_default: true
+    entity_category: diagnostic
       
   - platform: output
-    name: '${name}_${fpilote_id}_${fpilote_neg_pin}'
-    output: ${fpilote_hub}_output_${fpilote_neg_pin}
     id: ${fpilote_id}_${fpilote_neg_pin}
+    name: '${name}_${fpilote_id}_${fpilote_neg_pin}'
+    device_id: fil_pilote_device
+    output: ${fpilote_hub}_output_${fpilote_neg_pin}
     disabled_by_default: true
+    entity_category: diagnostic
     
 select:
   - platform: template
-    name: "${name}_${fpilote_id}_${fpilote_mode}"
     id: ${fpilote_id}_${fpilote_mode}
+    name: "${name}_${fpilote_id}_${fpilote_mode}"
+    device_id: fil_pilote_device
     options:
      - "Confort"    #Pas de signal envoyé
      - "Eco"        #Alternance pleine
@@ -72,61 +71,84 @@ select:
       - logger.log:
           format: "Chosen option: %s"
           args: ["x.c_str()"]
-      - lambda: |-
-          id(${fpilote_id}_${fpilote_mode}).state = x.c_str(); 
+       
     on_value:
       then:
+
         - if:
             condition:
-              - lambda: |- 
-                  return id(${fpilote_id}_${fpilote_mode}).state == "Confort" ;
+              lambda: |-
+                return id(${fpilote_id}_${fpilote_mode}).current_option() == "Confort";
             then:
               - switch.turn_off: ${fpilote_id}_${fpilote_pos_pin}
               - switch.turn_off: ${fpilote_id}_${fpilote_neg_pin}
+
         - if:
             condition:
-              - lambda: |- 
-                  return id(${fpilote_id}_${fpilote_mode}).state == "Eco" ;
+              lambda: |-
+                return id(${fpilote_id}_${fpilote_mode}).current_option() == "Eco";
             then:
               - switch.turn_on: ${fpilote_id}_${fpilote_pos_pin}
               - switch.turn_on: ${fpilote_id}_${fpilote_neg_pin}
+
         - if:
             condition:
-              - lambda: |- 
-                  return id(${fpilote_id}_${fpilote_mode}).state == "Hors-gel" ;
+              lambda: |-
+                return id(${fpilote_id}_${fpilote_mode}).current_option() == "Hors-gel";
             then:
               - switch.turn_on: ${fpilote_id}_${fpilote_pos_pin}
               - switch.turn_off: ${fpilote_id}_${fpilote_neg_pin}
+
         - if:
             condition:
-              - lambda: |- 
-                  return id(${fpilote_id}_${fpilote_mode}).state == "Arrêt" ;
+              lambda: |-
+                return id(${fpilote_id}_${fpilote_mode}).current_option() == "Arrêt";
             then:
               - switch.turn_off: ${fpilote_id}_${fpilote_pos_pin}
               - switch.turn_on: ${fpilote_id}_${fpilote_neg_pin}
+
         - while:
             condition:
-              - lambda: |- 
-                  return id(${fpilote_id}_${fpilote_mode}).state == "Confort -1" ;
+              lambda: |-
+                return id(${fpilote_id}_${fpilote_mode}).current_option() == "Confort -1";
             then:
               - switch.turn_on: ${fpilote_id}_${fpilote_pos_pin}
               - switch.turn_on: ${fpilote_id}_${fpilote_neg_pin}
-              - delay: 3s
+
+              - wait_until:
+                  timeout: 3s
+                  condition:
+                    lambda: |-
+                      return id(${fpilote_id}_${fpilote_mode}).current_option() != "Confort -1";
+
               - switch.turn_off: ${fpilote_id}_${fpilote_pos_pin}
               - switch.turn_off: ${fpilote_id}_${fpilote_neg_pin}
-              - delay: 
-                  minutes: 4
-                  seconds: 57
+
+              - wait_until:
+                  timeout: 297s
+                  condition:
+                    lambda: |-
+                      return id(${fpilote_id}_${fpilote_mode}).current_option() != "Confort -1";
+
         - while:
             condition:
-              - lambda: |- 
-                  return id(${fpilote_id}_${fpilote_mode}).state == "Confort -2" ;
+              lambda: |-
+                return id(${fpilote_id}_${fpilote_mode}).current_option() == "Confort -2";
             then:
               - switch.turn_on: ${fpilote_id}_${fpilote_pos_pin}
               - switch.turn_on: ${fpilote_id}_${fpilote_neg_pin}
-              - delay: 7s
+
+              - wait_until:
+                  timeout: 7s
+                  condition:
+                    lambda: |-
+                      return id(${fpilote_id}_${fpilote_mode}).current_option() != "Confort -2";
+
               - switch.turn_off: ${fpilote_id}_${fpilote_pos_pin}
               - switch.turn_off: ${fpilote_id}_${fpilote_neg_pin}
-              - delay: 
-                  minutes: 4
-                  seconds: 53
+
+              - wait_until:
+                  timeout: 293s
+                  condition:
+                    lambda: |-
+                      return id(${fpilote_id}_${fpilote_mode}).current_option() != "Confort -2";

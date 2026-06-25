@@ -1,6 +1,11 @@
-# Updated : 2024.05.17
-# Version : 1.0.0
+# Updated : 2026.06.16
+# Version : 1.0.1
 # GitHub  : https://github.com/Dackara/
+
+esphome:
+  devices:
+    - id: sun_device
+      name: "Environment SUN"
 
 # https://esphome.io/components/sun
 sun:
@@ -14,21 +19,25 @@ time:
   
 sensor:
   - platform: sun
-    name: ${name}_sun_elevation
     id: sun_elevation
+    name: ${name}_sun_elevation
+    device_id: sun_device
     type: elevation
   - platform: sun
-    name: ${name}_sun_azimuth
     id: sun_azimuth
+    name: ${name}_sun_azimuth
+    device_id: sun_device
     type: azimuth
 
 text_sensor:
   - platform: sun
-    name: ${name}_sun_next_sunrise
     id: sun_next_sunrise
+    name: ${name}_sun_next_sunrise
+    device_id: sun_device
     type: sunrise
     # elevation: 0             # Defaults to -0.833°
   - platform: sun
-    name: ${name}_sun_next_sunset
     id: sun_next_sunset
+    name: ${name}_sun_next_sunset
+    device_id: sun_device
     type: sunset

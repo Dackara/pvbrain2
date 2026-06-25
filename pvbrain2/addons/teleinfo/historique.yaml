@@ -1,5 +1,12 @@
-# Updated : 2024.05.17
-# Version : 1.0.0
+#    __    _       __           ______   __     _       ____        _____ _ _           __
+#   / /   (_)___  / /____  __  /_  __/  / /__  (_)___  / __/___    / ____/ (_)__  ____ / /_
+#  / /   / / __ \/ //_/ / / /   / / _ \/ / _ \/ / __ \/ /_/ __ \  / /   / / / _ \/ __ \ __/
+# / /___/ / / / / ,< / /_/ /   / /  __/ /  __/ / / / / __/ /_/ / / /___/ / /  __/ / / / /_  
+#/_____/_/_/ /_/_/|_|\__, /   /_/\___/_/\___/_/_/ /_/_/  \____/  \____/_/_/\___/_/ /_/\__/  
+#                   /____/   
+
+# Updated : 2026.06.14
+# Version : 1.0.1
 # GitHub  : https://github.com/Dackara/
 
 # https://esphome.io/components/sensor/teleinfo.html
@@ -9,19 +16,26 @@ teleinfo:
     update_interval: ${linky_update_interval}
     historical_mode: true
 
+esphome:
+  devices:
+    - id: linky_device
+      name: "Linky TeleInfo Client"
+
 # https://esphome.io/components/sensor/index.html
 sensor:
   # Intensité souscrite
   - platform: teleinfo
     tag_name: "ISOUSC"
-    name: ${name}_${linky_name}_intensité_souscrite
+    name: ${name}_${linky_name}_intensite_souscrite
+    device_id: linky_device
     unit_of_measurement: A
     device_class: current
     state_class: measurement
   # Avertissement de Dépassement De Puissance Souscrite
   - platform: teleinfo
     tag_name: "ADPS"
-    name: ${name}_${linky_name}_intensité_instantanée_dépassement
+    name: ${name}_${linky_name}_intensite_instantanee_depassement
+    device_id: linky_device
     unit_of_measurement: A
     device_class: current
     state_class: measurement
@@ -29,6 +43,7 @@ sensor:
   - platform: teleinfo
     tag_name: "PAPP"
     name: ${name}_${linky_name}_puissance_apparente
+    device_id: linky_device
     unit_of_measurement: VA
     state_class: measurement
     device_class: apparent_power
@@ -37,6 +52,7 @@ sensor:
   - platform: teleinfo
     tag_name: "PMAX"
     name: ${name}_${linky_name}_puissance_maximale
+    device_id: linky_device
     unit_of_measurement: W
     state_class: measurement
     device_class: power
@@ -49,6 +65,7 @@ sensor:
   - platform: teleinfo
     tag_name: "BASE"
     name: ${name}_${linky_name}_index_base
+    device_id: linky_device
     unit_of_measurement: kWh
     device_class: energy
     state_class: total_increasing
@@ -65,6 +82,7 @@ sensor:
   - platform: teleinfo
     tag_name: "HCHC"
     name: ${name}_${linky_name}_index_hc
+    device_id: linky_device
     unit_of_measurement: kWh
     device_class: energy
     state_class: total_increasing
@@ -76,6 +94,7 @@ sensor:
   - platform: teleinfo
     tag_name: "HCHP"
     name: ${name}_${linky_name}_index_hp
+    device_id: linky_device
     unit_of_measurement: kWh
     device_class: energy
     state_class: total_increasing
@@ -92,6 +111,7 @@ sensor:
   - platform: teleinfo
     tag_name: "EJPHN"
     name: ${name}_${linky_name}_index_ejp_normal
+    device_id: linky_device
     unit_of_measurement: kWh
     device_class: energy
     state_class: total_increasing
@@ -103,6 +123,7 @@ sensor:
   - platform: teleinfo
     tag_name: "EJPHPM"
     name: ${name}_${linky_name}_index_ejp_pointe
+    device_id: linky_device
     unit_of_measurement: kWh
     device_class: energy
     state_class: total_increasing
@@ -119,6 +140,7 @@ sensor:
   - platform: teleinfo
     tag_name: "BBRHCJB"
     name: ${name}_${linky_name}_index_tempo_bleu_hc
+    device_id: linky_device
     unit_of_measurement: kWh
     device_class: energy
     state_class: total_increasing
@@ -130,6 +152,7 @@ sensor:
   - platform: teleinfo
     tag_name: "BBRHPJB"
     name: ${name}_${linky_name}_index_tempo_bleu_hp
+    device_id: linky_device
     unit_of_measurement: kWh
     device_class: energy
     state_class: total_increasing
@@ -141,6 +164,7 @@ sensor:
   - platform: teleinfo
     tag_name: "BBRHCJW"
     name: ${name}_${linky_name}_index_tempo_blanc_hc
+    device_id: linky_device
     unit_of_measurement: kWh
     device_class: energy
     state_class: total_increasing
@@ -152,6 +176,7 @@ sensor:
   - platform: teleinfo
     tag_name: "BBRHPJW"
     name: ${name}_${linky_name}_index_tempo_blanc_hp
+    device_id: linky_device
     unit_of_measurement: kWh
     device_class: energy
     state_class: total_increasing
@@ -163,6 +188,7 @@ sensor:
   - platform: teleinfo
     tag_name: "BBRHCJR"
     name: ${name}_${linky_name}_index_tempo_rouge_hc
+    device_id: linky_device
     unit_of_measurement: kWh
     device_class: energy
     state_class: total_increasing
@@ -174,6 +200,7 @@ sensor:
   - platform: teleinfo
     tag_name: "BBRHPJR"
     name: ${name}_${linky_name}_index_tempo_rouge_hp
+    device_id: linky_device
     unit_of_measurement: kWh
     device_class: energy
     state_class: total_increasing
@@ -189,7 +216,8 @@ sensor:
   # Intensité Instantanée (monophasé)
   - platform: teleinfo
     tag_name: "IINST"
-    name: ${name}_${linky_name}_intensité_instantanée
+    name: ${name}_${linky_name}_intensite_instantanee
+    device_id: linky_device
     unit_of_measurement: A
     device_class: current
     state_class: measurement
@@ -197,7 +225,8 @@ sensor:
   # Intensité maximale appelée (monophasé)
   - platform: teleinfo
     tag_name: "IMAX"
-    name: ${name}_${linky_name}_intensité_maximale
+    name: ${name}_${linky_name}_intensite_maximale
+    device_id: linky_device
     unit_of_measurement: A
     device_class: current
     state_class: measurement
@@ -209,7 +238,8 @@ sensor:
   # Intensité Instantanée, (triphasé) phase 1
   - platform: teleinfo
     tag_name: "IINST1"
-    name: ${name}_${linky_name}_intensité_instantanée_phase_1
+    name: ${name}_${linky_name}_intensite_instantanee_phase_1
+    device_id: linky_device
     unit_of_measurement: A
     device_class: current
     state_class: measurement
@@ -217,7 +247,8 @@ sensor:
   # Intensité Instantanée, (triphasé) phase 2
   - platform: teleinfo
     tag_name: "IINST2"
-    name: ${name}_${linky_name}_intensité_instantanée_phase_2
+    name: ${name}_${linky_name}_intensite_instantanee_phase_2
+    device_id: linky_device
     unit_of_measurement: A
     device_class: current
     state_class: measurement
@@ -225,7 +256,8 @@ sensor:
   # Intensité Instantanée, (triphasé) phase 3
   - platform: teleinfo
     tag_name: "IINST3"
-    name: ${name}_${linky_name}_intensité_instantanée_phase_3
+    name: ${name}_${linky_name}_intensite_instantanee_phase_3
+    device_id: linky_device
     unit_of_measurement: A
     device_class: current
     state_class: measurement
@@ -233,21 +265,24 @@ sensor:
   # Intensité maximale appelée, (triphasé) phase 1
   - platform: teleinfo
     tag_name: "IMAX1"
-    name: ${name}_${linky_name}_intensité_maximale_phase_1
+    name: ${name}_${linky_name}_intensite_maximale_phase_1
+    device_id: linky_device
     unit_of_measurement: A
     device_class: current
     state_class: measurement
   # Intensité maximale appelée, (triphasé) phase 2
   - platform: teleinfo
     tag_name: "IMAX2"
-    name: ${name}_${linky_name}_intensité_maximale_phase_2
+    name: ${name}_${linky_name}_intensite_maximale_phase_2
+    device_id: linky_device
     unit_of_measurement: A
     device_class: current
     state_class: measurement
   # Intensité maximale appelée, (triphasé) phase 3
   - platform: teleinfo
     tag_name: "IMAX3"
-    name: ${name}_${linky_name}_intensité_maximale_phase_3
+    name: ${name}_${linky_name}_intensite_maximale_phase_3
+    device_id: linky_device
     unit_of_measurement: A
     device_class: current
     state_class: measurement
@@ -258,35 +293,43 @@ text_sensor:
   - platform: teleinfo
     tag_name: "ADCO"
     name: ${name}_${linky_name}_adresse
+    device_id: linky_device
   # Option tarifaire choisie
   - platform: teleinfo
     tag_name: "OPTARIF"
     name: ${name}_${linky_name}_option_tarifaire
+    device_id: linky_device
   # Période Tarifaire en cours
   - platform: teleinfo
     tag_name: "PTEC"
-    name: ${name}_${linky_name}_période_tarifaire
+    name: ${name}_${linky_name}_periode_tarifaire
+    device_id: linky_device
     icon: mdi:clock-time-nine-outline
   # Mot d'état du compteur
   - platform: teleinfo
     tag_name: "MOTDETAT"
-    name: ${name}_${linky_name}_mot_d_état
+    name: ${name}_${linky_name}_mot_d_etat
+    device_id: linky_device
   # Présence des potentiels
   - platform: teleinfo
     tag_name: "PPOT"
-    name: ${name}_${linky_name}_présence_potentiels
+    name: ${name}_${linky_name}_presence_potentiels
+    device_id: linky_device
     
   # Préavis Début EJP (30 min)
   - platform: teleinfo
     tag_name: "PEJP"
-    name: ${name}_${linky_name}_préavis_ejp
+    name: ${name}_${linky_name}_preavis_ejp
+    device_id: linky_device
   
   # Couleur du lendemain
   - platform: teleinfo
     tag_name: "DEMAIN"
     name: ${name}_${linky_name}_couleur_demain
+    device_id: linky_device
     
   # Horaire Heures Pleines Heures Creuses
   - platform: teleinfo
     tag_name: "HHPHC"
     name: ${name}_${linky_name}_horaire_hp_hc
+    device_id: linky_device

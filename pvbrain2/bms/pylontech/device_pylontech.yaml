@@ -1,3 +1,12 @@
+# Updated : 2026.06.14
+# Version : 1.0.1
+# GitHub  : https://github.com/Dackara/
+
+esphome:
+  devices:
+    - id: pylontech_device
+      name: "Pylontech Battery"
+
 external_components:
   - source: github://dackara/esphome-pylontech@official-patched
     refresh: 0s
@@ -14,30 +23,39 @@ sensor:
     voltage:
       id: ${pylon_name}_${pylon_number}_tension
       name: '${name}_${pylon_name}${pylon_number}_tension'
+      device_id: pylontech_device
     current:
       id: ${pylon_name}_${pylon_number}_courant_charge
       name: '${name}_${pylon_name}${pylon_number}_courant_charge'
+      device_id: pylontech_device
     coulomb:
       id: ${pylon_name}_${pylon_number}_capacity
       name: '${name}_${pylon_name}${pylon_number}_capacity'
+      device_id: pylontech_device
     temperature:
       id: ${pylon_name}_${pylon_number}_temperature
       name: '${name}_${pylon_name}${pylon_number}_temperature'
+      device_id: pylontech_device
     temperature_low:
       id: ${pylon_name}_${pylon_number}_low_temperature
       name: '${name}_${pylon_name}${pylon_number} low temperature'
+      device_id: pylontech_device
     temperature_high:
       id: ${pylon_name}_${pylon_number}_high_temperature
       name: '${name}_${pylon_name}${pylon_number} high temperature'
+      device_id: pylontech_device
     voltage_low:
       id: ${pylon_name}_${pylon_number}_cell_low
       name: '${name}_${pylon_name}${pylon_number}_cell_low'
+      device_id: pylontech_device
     voltage_high:
       id: ${pylon_name}_${pylon_number}_cell_high
       name: '${name}_${pylon_name}${pylon_number}_cell_high'  
+      device_id: pylontech_device
     mos_temperature:
       id: ${pylon_name}_${pylon_number}_mosfet_temperature
       name: '${name}_${pylon_name}${pylon_number}_mosfet_temperature'
+      device_id: pylontech_device
       
 text_sensor:
   - platform: pylontech
@@ -46,27 +64,36 @@ text_sensor:
     base_state:
       id: ${pylon_name}_${pylon_number}_base_state
       name: '${name}_${pylon_name}_${pylon_number}_base_state'
+      device_id: pylontech_device
     voltage_state:
       id: ${pylon_name}_${pylon_number}_voltage_state
       name: '${name}_${pylon_name}_${pylon_number}_voltage_sate'
+      device_id: pylontech_device
     current_state:
       id: ${pylon_name}_${pylon_number}_current_state
       name: '${name}_${pylon_name}_${pylon_number}_current_state'
+      device_id: pylontech_device
     temperature_state:
       id: ${pylon_name}_${pylon_number}_temperature_state
       name: '${name}_${pylon_name}_${pylon_number}_temperature_state'
+      device_id: pylontech_device
     date_state:
       id: ${pylon_name}_${pylon_number}_date_state
       name: '${name}_${pylon_name}_${pylon_number}_date_state'
+      device_id: pylontech_device
     time_state:
       id: ${pylon_name}_${pylon_number}_time_state
       name: '${name}_${pylon_name}_${pylon_number}_time_state'
+      device_id: pylontech_device
     bv_state:
       id: ${pylon_name}_${pylon_number}_bv_state
       name: '${name}_${pylon_name}_${pylon_number}_bv_state'
+      device_id: pylontech_device
     bt_state:
       id: ${pylon_name}_${pylon_number}_bt_state
       name: '${name}_${pylon_name}_${pylon_number}_bt_state'
+      device_id: pylontech_device
     mos_state:
       id: ${pylon_name}_${pylon_number}_mos_state
-      name: '${name}_${pylon_name}_${pylon_number}_mos_state' 
+      name: '${name}_${pylon_name}_${pylon_number}_mos_state'
+      device_id: pylontech_device 

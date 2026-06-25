@@ -1,27 +1,41 @@
-# Updated : 2024.07.29
-# Version : 1.0.3
+# Updated : 2026.06.16 
+# Version : 1.0.7
 # GitHub  : https://github.com/Dackara/
+# YouTube : https://youtube.com/@DackaraDemo
 
-# +--------------------------------------+
-# | Example of use                       |
-# +--------------------------------------+
-# | DEBUG ( logger level must be DEBUG ) |
-# +--------------------------------------+
+# +-----------------------------------------------+
+# | Example of use                                |
+# +-----------------------------------------------+
+# | DEBUG ( for work logger level must be DEBUG ) |
+# +-----------------------------------------------+
 
   # device_debug: !include
   #   file: pvbrain2/base/device_debug.yaml
   #   vars:
-  #     debug_name: 'Debug'
+  #     debug_name: 'debug'
   #     debug_update_interval: '5s'
-  #     # Size of your PSRAM in bits
-  #     # 8Mb='8388608' | 6Mb='6291456' | 4Mb='4194304' | 2Mb='2097152' | NoPSRAM='0'
-  #     debug_psram_size: '8388608'
 
-# +--------------------------------------+
+# +-----------------------------------------------+
 
-# The PSRAM platform must be included for the sensor of the same name to work
-# The psram: platform is already declared in the main YAML 'pvbrain2.yam'
+# # The PSRAM platform must be included for the sensor of the same name to work.
+# #   Is already declared in the main YAML 'pvbrain2.yaml', if not, Uncomment:
 # psram:
+
+# +-----------------------------------------------+
+
+esphome:
+  devices:
+    - id: debug_device
+      name: "Device Debug Info"
+
+globals:
+  - id: loop_buffer
+    type: std::vector<float>
+    restore_value: no
+  - id: loop_index
+    type: int
+    restore_value: no
+    initial_value: "0"
 
 debug:
   update_interval: ${debug_update_interval}
@@ -29,57 +43,505 @@ debug:
 text_sensor:
   - platform: debug
     device:
-      name: ${name}_${debug_name}_device_info
       id: ${debug_name}_device_info
+      name: ${name}_${debug_name}_device_info
+      device_id: debug_device
+      # internal: true
     reset_reason:
-      name: ${name}_${debug_name}_reset_reason
       id: ${debug_name}_reset_reason
+      name: ${name}_${debug_name}_reset_reason
+      device_id: debug_device
+
+# Wakeup reason
+  - platform: template
+    id: ${debug_name}_wakeup_reason
+    name: ${name}_${debug_name}_wakeup_reason
+    device_id: debug_device
+    entity_category: diagnostic
+    lambda: |-
+      std::string data = id(${debug_name}_device_info).state;
+      auto start = data.find("Wakeup:");
+      if (start == std::string::npos) return std::string("");
+      start += 7;
+      return data.substr(start);
+
+# ESPHome Flash Version
+  - platform: template
+    id: ${debug_name}_info_esphome_flash_version
+    name: ${name}_${debug_name}_info_esphome_flash_version
+    device_id: debug_device
+    entity_category: diagnostic
+    lambda: |-
+      std::string data = id(${debug_name}_device_info).state;
+      std::string part;
+      for (char c : data) {
+        if (c == '|') break;
+        part += c;
+      }
+      return part;
+
+# Chip
+  - platform: template
+    id: ${debug_name}_info_chip
+    name: ${name}_${debug_name}_info_chip
+    device_id: debug_device
+    entity_category: diagnostic
+    lambda: |-
+      std::string data = id(${debug_name}_device_info).state;
+      std::vector<std::string> parts;
+      std::string current;
+      for (char c : data) {
+        if (c == '|') {
+          parts.push_back(current);
+          current.clear();
+        } else {
+          current += c;
+        }
+      }
+      parts.push_back(current);
+      // extraction du "Chip:" dans la 2e partie
+      if (parts.size() > 1) {
+        std::string text = parts[1];
+        auto start = text.find("Chip:");
+        auto end = text.find("Features:");
+        if (start != std::string::npos && end != std::string::npos) {
+          std::string chip = text.substr(start + 5, end - start - 5);
+          // Nettoyage d'espaces
+          while (chip.size() && chip[0] == ' ') chip.erase(0, 1);
+          while (chip.size() && chip.back() == ' ') chip.pop_back();
+          return chip;
+        }
+      }
+      return std::string("");
+
+# Framework
+  - platform: template
+    id: ${debug_name}_info_framework
+    name: ${name}_${debug_name}_info_framework
+    device_id: debug_device
+    entity_category: diagnostic
+    lambda: |-
+     std::string data = id(${debug_name}_device_info).state;
+      auto start = data.find("Framework:");
+      if (start == std::string::npos) return std::string("");
+      start += 10;
+     // Cherche "|" après Framework:
+      auto end = data.find("|", start);
+      if (end == std::string::npos) end = data.size();
+      return data.substr(start, end - start);
+
+# Framework Version
+  - platform: template
+    id: ${debug_name}_info_framework_version
+    name: ${name}_${debug_name}_info_framework_version
+    device_id: debug_device
+    entity_category: diagnostic
+    lambda: |-
+     std::string data = id(${debug_name}_device_info).state;
+     // ESP-IDF
+      auto start = data.find("ESP-IDF:");
+      if (start != std::string::npos) {
+        start += 8;
+        auto end = data.find("|EFuse", start);
+        if (end == std::string::npos) end = data.size();
+        return data.substr(start, end - start);
+      }
+      // Arduino
+      start = data.find("Arduino Core:");
+      if (start != std::string::npos) {
+        start += 13;
+        auto end = data.find("|EFuse", start);
+        if (end == std::string::npos) end = data.size();
+        return data.substr(start, end - start);
+      }
+      return std::string("");
 
 sensor:
   - platform: debug
     free:
-      name: ${name}_${debug_name}_heap_free
       id: ${debug_name}_heap_free
+      name: ${name}_${debug_name}_heap_free
+      device_id: debug_device
     block:
-      name: ${name}_${debug_name}_heap_max_block
       id: ${debug_name}_heap_max_block
+      name: ${name}_${debug_name}_heap_max_block
+      device_id: debug_device
     psram:
-      name: ${name}_${debug_name}_free_PSRAM
       id: ${debug_name}_free_psram
+      name: ${name}_${debug_name}_free_PSRAM
+      device_id: debug_device
     loop_time:
-      name: ${name}_${debug_name}_loop_time
       id: ${debug_name}_loop_time
+      name: ${name}_${debug_name}_loop_time
+      device_id: debug_device
 
   - platform: template
-    name: ${name}_${debug_name}_heap_free_percent
     id: ${debug_name}_heap_free_percent
+    name: ${name}_${debug_name}_heap_free_percent
+    device_id: debug_device
     unit_of_measurement: '%'
     accuracy_decimals: 2
     icon: mdi:percent
     update_interval: ${debug_update_interval}
     entity_category: diagnostic
-    # 524288 B (SRAM total)
-    # 327680 B (DRAM usable)
-    lambda: return ( id(${debug_name}_heap_free).state * 100 / 327680 );
+    lambda: return ( id(${debug_name}_heap_free).state * 100 / id(${debug_name}_total_dram).state );
 
   - platform: template
-    name: ${name}_${debug_name}_heap_max_block_percent
     id: ${debug_name}_heap_max_block_percent
+    name: ${name}_${debug_name}_heap_max_block_percent
+    device_id: debug_device
     unit_of_measurement: '%'
     accuracy_decimals: 2
     icon: mdi:percent
     update_interval: ${debug_update_interval}
     entity_category: diagnostic
-    # 524288 B (SRAM total)
-    # 327680 B (DRAM usable)
-    lambda: return ( id(${debug_name}_heap_max_block).state * 100 / 327680 );
+    lambda: return ( id(${debug_name}_heap_max_block).state * 100 / id(${debug_name}_total_dram).state );
 
   - platform: template
-    name: ${name}_${debug_name}_free_psram_percent
     id: ${debug_name}_free_psram_percent
+    name: ${name}_${debug_name}_free_psram_percent
+    device_id: debug_device
     unit_of_measurement: '%'
     accuracy_decimals: 2
     icon: mdi:percent
     update_interval: ${debug_update_interval}
     entity_category: diagnostic
-    lambda: return ( id(${debug_name}_free_psram).state * 100 / ${debug_psram_size} ); // 8388608
+    lambda: return ( id(${debug_name}_free_psram).state * 100 / id(${debug_name}_total_psram).state );
+
+  - platform: template
+    id: ${debug_name}_total_dram
+    name: ${name}_${debug_name}_total_dram
+    device_id: debug_device
+    unit_of_measurement: "B"
+    update_interval: 60s
+    entity_category: diagnostic
+    lambda: |-
+      return heap_caps_get_total_size(MALLOC_CAP_INTERNAL);
+
+  - platform: template
+    id: ${debug_name}_free_internal_ram
+    name: ${name}_${debug_name}_free_dram
+    device_id: debug_device
+    unit_of_measurement: "B"
+    entity_category: diagnostic
+    update_interval: 10s
+    lambda: |-
+      return heap_caps_get_free_size(MALLOC_CAP_INTERNAL);
+
+  - platform: template
+    id: ${debug_name}_total_psram
+    name: ${name}_${debug_name}_total_psram
+    device_id: debug_device
+    unit_of_measurement: "B"
+    entity_category: diagnostic
+    update_interval: 60s
+    lambda: |-
+      return heap_caps_get_total_size(MALLOC_CAP_SPIRAM);
+
+# CPU Frequency (hard coded)
+  - platform: template
+    id: ${debug_name}_info_cpu_frequency
+    name: ${name}_${debug_name}_info_cpu_frequency
+    device_id: debug_device
+    unit_of_measurement: "MHz"
+    accuracy_decimals: 0 
+    entity_category: diagnostic
+    lambda: |-
+      std::string data = id(${debug_name}_device_info).state;
+      auto start = data.find("CPU Frequency:");
+      if (start == std::string::npos) return 0.0;
+      start += 14;
+      auto end = data.find(" MHz", start);
+      if (end == std::string::npos) return 0.0;
+      return atof(data.substr(start, end - start).c_str());
+
+# CPU Frequency Core 0 (by Cycle per second)
+  - platform: template
+    id: ${debug_name}_cpu_cycles_per_sec_core0
+    name: ${name}_${debug_name}_cpu_cycles_per_sec_core0
+    device_id: debug_device
+    unit_of_measurement: "MHz"
+    update_interval: 2s
+    accuracy_decimals: 2
+    entity_category: diagnostic
+    lambda: |-
+      static uint32_t last_cycle = 0;
+      static uint32_t last_time = 0;
+      uint32_t now_cycle = 0;
+      uint32_t now_time = millis();
+      // Lire compteur Core 0
+      esp_ipc_call_blocking(0, [](void* arg){
+        uint32_t* ptr = (uint32_t*)arg;
+        *ptr = esp_cpu_get_cycle_count();
+      }, &now_cycle);
+      if (last_time == 0) {
+        last_cycle = now_cycle;
+        last_time = now_time;
+        return 0.0f;
+      }
+      uint32_t delta_cycle = now_cycle - last_cycle;
+      uint32_t delta_ms = now_time - last_time;
+      last_cycle = now_cycle;
+      last_time = now_time;
+      if (delta_ms == 0) return 0.0f;
+      float mhz = ((float)delta_cycle / (delta_ms / 1000.0f)) / 1e6f;
+      return mhz;
+
+# CPU Frequency Core 1 (by Cycle per second)
+  - platform: template
+    id: ${debug_name}_cpu_cycles_per_sec_core1
+    name: ${name}_${debug_name}_cpu_cycles_per_sec_core1
+    device_id: debug_device
+    unit_of_measurement: "MHz"
+    update_interval: 2s
+    accuracy_decimals: 2
+    entity_category: diagnostic
+    lambda: |-
+      static uint32_t last_cycle = 0;
+      static uint32_t last_time = 0;
+      uint32_t now_cycle = 0;
+      uint32_t now_time = millis();
+      // Lire compteur Core 1
+      esp_ipc_call_blocking(1, [](void* arg){
+        uint32_t* ptr = (uint32_t*)arg;
+        *ptr = esp_cpu_get_cycle_count();
+      }, &now_cycle);
+      if (last_time == 0) {
+        last_cycle = now_cycle;
+        last_time = now_time;
+        return 0.0f;
+      }
+      uint32_t delta_cycle = now_cycle - last_cycle;
+      uint32_t delta_ms = now_time - last_time;
+      last_cycle = now_cycle;
+      last_time = now_time;
+      if (delta_ms == 0) return 0.0f;
+      float mhz = ((float)delta_cycle / (delta_ms / 1000.0f)) / 1e6f;
+      return mhz;
+
+# -----------------------------
+# WiFi features
+# -----------------------------
+  - platform: template
+    id: ${debug_name}_info_features_wifi
+    name: ${name}_${debug_name}_info_features_wifi
+    device_id: debug_device
+    unit_of_measurement: "GHz"
+    accuracy_decimals: 1
+    entity_category: diagnostic
+    lambda: |-
+      std::string data = id(${debug_name}_device_info).state;
+      auto start = data.find("Features:");
+      if (start == std::string::npos) return 0.0;
+      start = data.find_first_of("0123456789", start);  // chercher le début du nombre
+      if (start == std::string::npos) return 0.0;
+      auto end = data.find("GHz", start);
+      if (end == std::string::npos) return 0.0;
+      return atof(data.substr(start, end - start).c_str());
+
+# Amount of Cores
+  - platform: template
+    id: ${debug_name}_info_cores
+    name: ${name}_${debug_name}_info_cores
+    device_id: debug_device
+    unit_of_measurement: "cores"
+    accuracy_decimals: 0
+    update_interval: 60s
+    entity_category: diagnostic
+    lambda: |-
+      std::string data = id(${debug_name}_device_info).state;
+      auto pos = data.find("Cores:");
+      if (pos == std::string::npos) return 0.0f;
+      pos += 6; // avancer après "Cores:"
+      while (pos < data.size() && data[pos] == ' ') pos++;
+      size_t end = pos;
+      while (end < data.size() && data[end] >= '0' && data[end] <= '9') end++;
+      if (end == pos) return 0.0f;
+      std::string num = data.substr(pos, end - pos);
+      return (float)atoi(num.c_str());
+
+  - platform: template
+    id: "${debug_name}_info_esp_revision"
+    name: "${name}_${debug_name}_info_esp_revision"
+    device_id: debug_device
+    accuracy_decimals: 0
+    update_interval: 60s
+    entity_category: diagnostic
+    lambda: |-
+      std::string data = id(${debug_name}_device_info).state;
+      auto pos = data.find("Revision:");
+      if (pos == std::string::npos) return 0.0f;
+      pos += 9; // avancer après "Revision:"
+      while (pos < data.size() && data[pos] == ' ') pos++;
+      size_t end = pos;
+      while (end < data.size() && data[end] >= '0' && data[end] <= '9') end++;
+      if (end == pos) return 0.0f;
+      std::string num = data.substr(pos, end - pos);
+      return (float)atoi(num.c_str());
+
+  # Looptime Average per hour
+  - platform: template
+    id: "${debug_name}_loop_time_avg_hour"
+    name: "${name}_${debug_name}_loop_time_avg_hour"
+    device_id: debug_device
+    unit_of_measurement: "ms"
+    update_interval: ${debug_update_interval}
+    entity_category: diagnostic
+    lambda: |-
+      return id(${debug_name}_loop_time).state;
+    filters:
+      - sliding_window_moving_average:
+          window_size: 720        # nombre de mesures dans la fenêtre moyenne sur 1h (5s * 720 = 3600s)
+          send_every: 60          # fréquence d'envoi de la moyenne, toutes les 60 mesures
+
+  - platform: template
+    id: "${debug_name}_loop_time_high"
+    name: "${name}_${debug_name}_loop_time_high_hour"
+    device_id: debug_device
+    unit_of_measurement: "ms"
+    update_interval: 5s
+    entity_category: diagnostic
+    lambda: |-
+      const int window = 720;  // 1h à 5s
+      float val = id(${debug_name}_loop_time).state;
+
+      if (isnan(val)) return NAN;
+
+      if (id(loop_buffer).size() < window) {
+        id(loop_buffer).push_back(val);
+      } else {
+        id(loop_buffer)[id(loop_index)] = val;
+        id(loop_index) = (id(loop_index) + 1) % window;
+      }
+
+      if (id(loop_buffer).empty()) return NAN;
+
+      float max_val = id(loop_buffer)[0];
+      for (auto v : id(loop_buffer)) {
+        if (v > max_val) max_val = v;
+      }
+
+      return roundf(max_val * 10.0f) / 10.0f;
+  
+  - platform: template
+    id: "${debug_name}_loop_time_low"
+    name: "${name}_${debug_name}_loop_time_low_hour"
+    device_id: debug_device
+    unit_of_measurement: "ms"
+    update_interval: 5s
+    entity_category: diagnostic
+    lambda: |-
+      const int window = 720;  // 1h à 5s
+      float val = id(${debug_name}_loop_time).state;
+
+      // ignorer tant qu'on n'a pas une vraie mesure
+      if (isnan(val)) return NAN;
+
+      if (id(loop_buffer).size() < window) {
+        id(loop_buffer).push_back(val);
+      } else {
+        id(loop_buffer)[id(loop_index)] = val;
+        id(loop_index) = (id(loop_index) + 1) % window;
+      }
+
+      if (id(loop_buffer).empty()) return NAN;
+
+      float min_val = id(loop_buffer)[0];
+      for (auto v : id(loop_buffer)) {
+        if (v < min_val) min_val = v;
+      }
+
+      return roundf(min_val * 10.0f) / 10.0f;
+
+
+
+  # # --- Instruction RAM (IRAM) ---
+  # - platform: template
+  #   name: "${name}_${debug_name}_free_iram"
+  #   unit_of_measurement: "B"
+  #   update_interval: 10s
+  #   lambda: |-
+  #     return heap_caps_get_free_size(MALLOC_CAP_IRAM);
+
+  # - platform: template
+  #   name: "${name}_${debug_name}_total_iram"
+  #   unit_of_measurement: "B"
+  #   update_interval: 60s
+  #   lambda: |-
+  #     return heap_caps_get_total_size(MALLOC_CAP_IRAM);
+
+
+  # Default Heap
+  - platform: template
+    id: "${debug_name}_total_default_heap"
+    name: "${name}_${debug_name}_total_default_heap"
+    device_id: debug_device
+    unit_of_measurement: "B"
+    update_interval: 60s
+    entity_category: diagnostic
+    lambda: |-
+      return heap_caps_get_total_size(MALLOC_CAP_DEFAULT);
+
+  # DMA memory
+  - platform: template
+    id: "${debug_name}_free_dma"
+    name: "${name}_${debug_name}_free_dma"
+    device_id: debug_device
+    unit_of_measurement: "B"
+    update_interval: 10s
+    entity_category: diagnostic
+    lambda: |-
+      return heap_caps_get_free_size(MALLOC_CAP_DMA);
+
+  - platform: template
+    id: "${debug_name}_total_dma"
+    name: "${name}_${debug_name}_total_dma"
+    device_id: debug_device
+    unit_of_measurement: "B"
+    update_interval: 60s
+    entity_category: diagnostic
+    lambda: |-
+      return heap_caps_get_total_size(MALLOC_CAP_DMA);
+
+
+
+
+
+
+
+# binary_sensor:
+# # -----------------------------
+# # BLE features (binary)
+# # -----------------------------
+#   - platform: template
+#     name: ${name}_${debug_name}_features_ble
+#     id: ${debug_name}_features_ble
+#     lambda: |-
+#       std::string data = id(${debug_name}_device_info).state;
+#       return data.find("BLE") != std::string::npos;
+
+
+
+
+
+
+  # # I RAM (Instruction RAM - pour les instructions)
+  # - platform: custom
+  #   lambda: |-
+  #     auto free_iram_sensor = new Sensor();
+  #     auto total_iram_sensor = new Sensor();
+  #     free_iram_sensor->publish_state(heap_caps_get_info(NULL, MALLOC_CAP_IRAM).total_free_bytes);  // Free I RAM
+  #     total_iram_sensor->publish_state(heap_caps_get_info(NULL, MALLOC_CAP_IRAM).total_bytes);  // Total I RAM
+  #     App.register_component(free_iram_sensor);
+  #     App.register_component(total_iram_sensor);
+  #     return {free_iram_sensor, total_iram_sensor};
+  #   sensors:
+  #     - name: ${name}_${debug_name}_free_i_ram
+  #       id: ${debug_name}_free_i_ram
+  #       unit_of_measurement: "bytes"
+  #       icon: mdi:memory
+  #     - name: ${name}_${debug_name}_total_i_ram
+  #       id: ${debug_name}_total_i_ram
+  #       unit_of_measurement: "bytes"
+  #       icon: mdi:memory
+

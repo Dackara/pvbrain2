@@ -1,19 +1,36 @@
-# Updated : 2024.05.22
-# Version : 1.0.1
+# Updated : 2026.06.16
+# Version : 1.0.3
 # GitHub  : https://github.com/Dackara/
 
+# +---------------------------------------------+
+# | Automatic operation of a PWM fan controlled |
+# |  by a temperature probe.                    |
+# +---------------------------------------------+
+
 esphome:
+  devices:
+    - id: case_fan_device
+      name: "Device PWM Fan"
   on_boot:
     priority: -100.0
     then:
-      - select.set:
-          id: pwm_${fan_name}_selector
-          option: 'Auto'
+      # - logger.log:
+      #     format: "Fan as a Auto preset_mode"
+      # - text_sensor.template.publish:
+      #     id: ${fan_name}_preset_mode
+      #     state: 'Auto'
+      # - delay: 300ms
+      # - script.execute: ${fan_name}_set_fan_state
+      # - select.set:
+      #     id: pwm_${fan_name}_selector
+      #     option: 'Auto'
+      - script.execute: ${fan_name}_on_boot_script
 
 select:
   - platform: template
-    name: ${name}_pwm_${fan_name}_selector
     id: pwm_${fan_name}_selector
+    name: ${name}_pwm_${fan_name}_selector
+    device_id: case_fan_device
     optimistic: true
     options:
       - 'Auto'
@@ -26,26 +43,29 @@ select:
       - logger.log:
           format: "Fan as a %s preset_mode"
           args: ["x.c_str()"]
-      - lambda: |-
-          id(pwm_${fan_name}_selector).state = x.c_str(); 
+      # - lambda: |-
+      #     id(pwm_${fan_name}_selector)
+      #       ->make_call()
+      #       .set_option(x)
+      #       .perform();
     on_value:
       then:
         - if:
             condition:
               - lambda: |- 
-                  return id(pwm_${fan_name}_selector).state == "Auto" ;
+                  return id(pwm_${fan_name}_selector).current_option() == "Auto" ;
             then:
               - text_sensor.template.publish:
                   id: ${fan_name}_preset_mode
                   state: 'Auto'
               - rtttl.play: 'bipbip:d=8,o=5,b=140:16e6,32p,16e6'
-              - script.execute: set_fan_state
+              - script.execute: ${fan_name}_set_fan_state
         - if:
             condition:
               - lambda: |- 
-                  return id(pwm_${fan_name}_selector).state == "Manual" ;
+                  return id(pwm_${fan_name}_selector).current_option() == "Manual" ;
             then:
-              - script.stop: set_fan_state
+              - script.stop: ${fan_name}_set_fan_state
               - rtttl.play: 'bipbip:d=8,o=5,b=140:16e6,32p,16e6'
               - text_sensor.template.publish:
                   id: ${fan_name}_preset_mode
@@ -53,9 +73,9 @@ select:
         - if:
             condition:
               - lambda: |- 
-                  return id(pwm_${fan_name}_selector).state == "Off" ;
+                  return id(pwm_${fan_name}_selector).current_option() == "Off" ;
             then:
-              - script.stop: set_fan_state
+              - script.stop: ${fan_name}_set_fan_state
               - fan.turn_off: pwm_${fan_name}
               - rtttl.play: 'bipbip:d=8,o=5,b=140:16e6,32p,16e6'
               - text_sensor.template.publish:
@@ -66,6 +86,7 @@ fan:
   - platform: speed
     id: pwm_${fan_name}
     name: ${name}_pwm_${fan_name}
+    device_id: case_fan_device
     output: ${pwm_fan_output_gpio_id}
     preset_modes:
       - 'Auto'
@@ -79,7 +100,7 @@ fan:
         - if:
             condition:
               - lambda: |- 
-                  return id(pwm_${fan_name}).preset_mode == "Auto" ;
+                  return id(pwm_${fan_name}).has_preset_mode() && id(pwm_${fan_name}).get_preset_mode() == "Auto" ;
             then: 
               - select.set:
                   id: pwm_${fan_name}_selector
@@ -87,7 +108,7 @@ fan:
         - if:
             condition:
               - lambda: |- 
-                  return id(pwm_${fan_name}).preset_mode == "Manual" ;
+                  return id(pwm_${fan_name}).has_preset_mode() && id(pwm_${fan_name}).get_preset_mode() == "Manual" ;
             then: 
               - select.set:
                   id: pwm_${fan_name}_selector
@@ -95,7 +116,7 @@ fan:
         - if:
             condition:
               - lambda: |- 
-                  return id(pwm_${fan_name}).preset_mode == "Off" ;
+                  return id(pwm_${fan_name}).has_preset_mode() && id(pwm_${fan_name}).get_preset_mode() == "Off" ;
             then: 
               - select.set:
                   id: pwm_${fan_name}_selector
@@ -105,6 +126,13 @@ fan:
         - sensor.template.publish:
             id: ${fan_name}_speed_percent
             state: !lambda 'return id(pwm_${fan_name}).speed;'
+        # - if:
+        #     condition:
+        #       text_sensor.state:
+        #         id: ${fan_name}_preset_mode
+        #         state: 'Auto'
+        #     then:
+        #       - script.execute: ${fan_name}_set_fan_state
         - if:
             condition:
               text_sensor.state:
@@ -120,14 +148,15 @@ fan:
       - sensor.template.publish:
           id: ${fan_name}_speed_percent
           state: !lambda 'return 0;'
-      - script.stop: set_fan_state
+      - script.stop: ${fan_name}_set_fan_state
 
 sensor:
   - platform: pulse_counter
-    pin: ${fan_pulse_counter_pin}
-    unit_of_measurement: 'RPM'
     id: ${fan_name}_speed_rpm
     name: ${name}_${fan_name}_speed_rpm
+    device_id: case_fan_device
+    pin: ${fan_pulse_counter_pin}
+    unit_of_measurement: 'RPM'
     accuracy_decimals: 0
     update_interval: 1s
     filters:
@@ -136,6 +165,7 @@ sensor:
   - platform: template
     id: ${fan_name}_speed_percent
     name: ${name}_${fan_name}_speed_percent
+    device_id: case_fan_device
     icon: mdi:percent
     unit_of_measurement: "%"
     accuracy_decimals: 0
@@ -150,6 +180,7 @@ text_sensor:
   - platform: template
     id: ${fan_name}_preset_mode
     name: ${name}_${fan_name}_preset_mode
+    device_id: case_fan_device
     icon: mdi:fan-clock
     lambda: return {};
 
@@ -157,6 +188,7 @@ number:
   - platform: template
     id: ${fan_name}_config_temperature_threshold_low
     name: ${name}_${fan_name}_config_temperature_threshold_low
+    device_id: case_fan_device
     unit_of_measurement: "°C"
     optimistic: true
     restore_value: true
@@ -172,11 +204,13 @@ number:
               id: ${fan_name}_preset_mode
               state: 'Auto'
           then: 
-            - script.execute: set_fan_state
+            # - fan.turn_on: pwm_${fan_name}
+            - script.execute: ${fan_name}_set_fan_state
 
   - platform: template
     id: ${fan_name}_config_temperature_threshold_high
     name: ${name}_${fan_name}_config_temperature_threshold_high
+    device_id: case_fan_device
     unit_of_measurement: "°C"
     optimistic: true
     restore_value: true
@@ -192,11 +226,13 @@ number:
               id: ${fan_name}_preset_mode
               state: 'Auto'
           then: 
-            - script.execute: set_fan_state
+            # - fan.turn_on: pwm_${fan_name}
+            - script.execute: ${fan_name}_set_fan_state
     
   - platform: template
     id: ${fan_name}_config_minimum_fan_speed
     name: ${name}_${fan_name}_config_minimum_fan_speed
+    device_id: case_fan_device
     unit_of_measurement: "%"
     optimistic: true
     restore_value: true
@@ -212,13 +248,14 @@ number:
               id: ${fan_name}_preset_mode
               state: 'Auto'
           then: 
-            - script.execute: set_fan_state
+            # - fan.turn_on: pwm_${fan_name}
+            - script.execute: ${fan_name}_set_fan_state
 
 # Sets the speed of the fan based on a linear calculation
 # between the high and low temperature thresholds and
 # the minimum specified fan speed
 script:
-  - id: set_fan_state
+  - id: ${fan_name}_set_fan_state
     then:
       - if:
           condition:
@@ -250,3 +287,10 @@ script:
                         }
                   - logger.log: "La vitesse du ventilateur à été mise à jour."
                   - delay: 60s
+
+  - id: ${fan_name}_on_boot_script
+    then:
+      - delay: 5s
+      - select.set:
+          id: pwm_${fan_name}_selector
+          option: 'Auto'

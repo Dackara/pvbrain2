@@ -1,6 +1,11 @@
-# Updated : 2024.05.20
-# Version : 1.0.0
+# Updated : 2026.06.16
+# Version : 1.0.1
 # GitHub  : https://github.com/Dackara/
+
+esphome:
+  devices:
+    - id: ${relays_name}_device
+      name: "GPIO ${relays_name}"
 
 output:
   - platform: gpio
@@ -149,81 +154,97 @@ output:
        
 switch:
   - platform: output
-    name: ${name}_${relays_name}_switch_pin0
     id: ${relays_name}_switch_pin0
+    name: ${name}_${relays_name}_switch_pin0
+    device_id: ${relays_name}_device
     output: ${relays_name}_output_pin0
     
   - platform: output
-    name: ${name}_${relays_name}_switch_pin1
     id: ${relays_name}_switch_pin1
+    name: ${name}_${relays_name}_switch_pin1
+    device_id: ${relays_name}_device
     output: ${relays_name}_output_pin1  
   
   - platform: output
-    name: ${name}_${relays_name}_switch_pin2
     id: ${relays_name}_switch_pin2
+    name: ${name}_${relays_name}_switch_pin2
+    device_id: ${relays_name}_device
     output: ${relays_name}_output_pin2
 
   - platform: output
-    name: ${name}_${relays_name}_switch_pin3
     id: ${relays_name}_switch_pin3
+    name: ${name}_${relays_name}_switch_pin3
+    device_id: ${relays_name}_device
     output: ${relays_name}_output_pin3
 
   - platform: output
-    name: ${name}_${relays_name}_switch_pin4
     id: ${relays_name}_switch_pin4
+    name: ${name}_${relays_name}_switch_pin4
+    device_id: ${relays_name}_device
     output: ${relays_name}_output_pin4
 
   - platform: output
-    name: ${name}_${relays_name}_switch_pin5
     id: ${relays_name}_switch_pin5
+    name: ${name}_${relays_name}_switch_pin5
+    device_id: ${relays_name}_device
     output: ${relays_name}_output_pin5
 
   - platform: output
-    name: ${name}_${relays_name}_switch_pin6
     id: ${relays_name}_switch_pin6
+    name: ${name}_${relays_name}_switch_pin6
+    device_id: ${relays_name}_device
     output: ${relays_name}_output_pin6
 
   - platform: output
-    name: ${name}_${relays_name}_switch_pin7
     id: ${relays_name}_switch_pin7
+    name: ${name}_${relays_name}_switch_pin7
+    device_id: ${relays_name}_device
     output: ${relays_name}_output_pin7    
 
   - platform: output
-    name: ${name}_${relays_name}_switch_pin8
     id: ${relays_name}_switch_pin8
+    name: ${name}_${relays_name}_switch_pin8
+    device_id: ${relays_name}_device
     output: ${relays_name}_output_pin8
 
   - platform: output
-    name: ${name}_${relays_name}_switch_pin9
     id: ${relays_name}_switch_pin9
+    name: ${name}_${relays_name}_switch_pin9
+    device_id: ${relays_name}_device
     output: ${relays_name}_output_pin9
 
   - platform: output
-    name: ${name}_${relays_name}_switch_pin10
     id: ${relays_name}_switch_pin10
+    name: ${name}_${relays_name}_switch_pin10
+    device_id: ${relays_name}_device
     output: ${relays_name}_output_pin10
 
   - platform: output
-    name: ${name}_${relays_name}_switch_pin11
     id: ${relays_name}_switch_pin11
+    name: ${name}_${relays_name}_switch_pin11
+    device_id: ${relays_name}_device
     output: ${relays_name}_output_pin11
 
   - platform: output
-    name: ${name}_${relays_name}_switch_pin12
     id: ${relays_name}_switch_pin12
+    name: ${name}_${relays_name}_switch_pin12
+    device_id: ${relays_name}_device
     output: ${relays_name}_output_pin12
 
   - platform: output
-    name: ${name}_${relays_name}_switch_pin13
     id: ${relays_name}_switch_pin13
+    name: ${name}_${relays_name}_switch_pin13
+    device_id: ${relays_name}_device
     output: ${relays_name}_output_pin13
 
   - platform: output
-    name: ${name}_${relays_name}_switch_pin14
     id: ${relays_name}_switch_pin14
+    name: ${name}_${relays_name}_switch_pin14
+    device_id: ${relays_name}_device
     output: ${relays_name}_output_pin14
 
   - platform: output
-    name: ${name}_${relays_name}_switch_pin15
     id: ${relays_name}_switch_pin15
+    name: ${name}_${relays_name}_switch_pin15
+    device_id: ${relays_name}_device
     output: ${relays_name}_output_pin15   

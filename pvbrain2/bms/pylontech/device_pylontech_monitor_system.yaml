@@ -1,0 +1,79 @@
+# Updated : 2026.06.14
+# Version : 1.0.0
+# GitHub  : https://github.com/Dackara/
+# GitHub  : https://github.com/kjm5759/pylontech-monitor
+
+esphome:
+  devices:
+    - id: pylontech_device
+      name: "Pylontech Battery System"
+
+external_components:
+  - source:
+      type: git
+      url: https://github.com/kjm5759/pylontech-monitor
+      ref: main
+    components: [pylontech_monitor]
+
+uart: 
+  id: !extend ${pylon_uart_id}
+  rx_buffer_size: 8192
+
+pylontech_monitor:
+  uart_id: ${pylon_uart_id}
+  battery_count: ${pylon_battery_count}        # number of batteries in your rack (1-10)
+  update_interval: ${pylon_update_interval}    # fast cycle: pwrsys + pwr
+  slow_interval: ${pylon_slow_interval}        # slow cycle: getpwr + stat
+
+  system_soc:
+    id: ${pylon_name}_system_soc
+    name: ${pylon_name}_system_soc
+    device_id: ${pylon_name}_device
+  system_soh:
+    id: ${pylon_name}_system_soh
+    name: ${pylon_name}_system_soh
+    device_id: ${pylon_name}_device
+  system_voltage:
+    id: ${pylon_name}_system_voltage
+    name: ${pylon_name}_voltage
+    device_id: ${pylon_name}_device
+  system_current:
+    id: ${pylon_name}_system_current
+    name: ${pylon_name}_system_current
+    device_id: ${pylon_name}_device
+  system_capacity:
+    id: ${pylon_name}_system_remaining_capacity
+    name: ${pylon_name}_system_remaining_capacity
+    device_id: ${pylon_name}_device
+  system_capacity_total:
+    id: ${pylon_name}_system_full_charge_capacity
+    name: ${pylon_name}_system_full_charge_capacity
+    device_id: ${pylon_name}_device
+  charge_power:
+    id: ${pylon_name}_system_charge_power
+    name: ${pylon_name}_system_charge_power
+    device_id: ${pylon_name}_device
+  discharge_power:
+    id: ${pylon_name}_system_discharge_power
+    name: ${pylon_name}_system_discharge_power
+    device_id: ${pylon_name}_device
+  charge_current:
+    id: ${pylon_name}_system_charge_current
+    name: ${pylon_name}_system_charge_current
+    device_id: ${pylon_name}_device
+  discharge_current:
+    id: ${pylon_name}_system_discharge_current
+    name: ${pylon_name}_system_discharge_current
+    device_id: ${pylon_name}_device
+  installed_batteries:
+    id: ${pylon_name}_system_total_batteries_configured
+    name: ${pylon_name}_system_total_batteries_configured
+    device_id: ${pylon_name}_device
+  present_batteries:
+    id: ${pylon_name}_system_batteries_currently_online
+    name: ${pylon_name}_system_batteries_currently_online
+    device_id: ${pylon_name}_device
+  available_energy:
+    id: ${pylon_name}_system_available_energy
+    name: ${pylon_name}_system_available_energy
+    device_id: ${pylon_name}_device

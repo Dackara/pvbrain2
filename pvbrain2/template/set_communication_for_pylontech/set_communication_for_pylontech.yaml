@@ -1,5 +1,5 @@
-# Updated : 2024.05.18
-# Version : 1.0.0
+# Updated : 2026.06.14
+# Version : 1.0.1
 # GitHub  : https://github.com/Dackara/
 
 # To initiate communication with Pylontech batteries for the first time, or, 
@@ -11,7 +11,8 @@
 
 button:
   - platform: uart
-    name: ${name}_pylontech_set_comunication_2400_to_115200
     id: pylontech_set_comunication_2400_to_115200
+    name: ${name}_pylontech_set_comunication_2400_to_115200
+    device_id: pylontech_device
     uart_id: ${pylontech_uart_id}
     data: [0x7E, 0x32, 0x30, 0x30, 0x31, 0x34, 0x36, 0x38, 0x32, 0x43, 0x30, 0x30, 0x34, 0x38, 0x35, 0x32, 0x30, 0x46, 0x43, 0x43, 0x33, 0x0d]

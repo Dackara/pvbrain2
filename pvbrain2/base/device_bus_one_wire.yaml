@@ -1,6 +1,12 @@
-# Updated : 2024.07.14
-# Version : 1.0.2
+# Updated : 2026.06.15
+# Version : 1.0.3
 # GitHub  : https://github.com/SeByDocKy/pvbrain2
+# GitHub  : https://github.com/Dackara
+
+esphome:
+  devices:
+    - id: one_wire_dallas_device
+      name: "Environment Dallas"
 
 one_wire:
   - platform: gpio

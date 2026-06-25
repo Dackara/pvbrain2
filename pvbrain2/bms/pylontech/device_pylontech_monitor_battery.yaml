@@ -1,0 +1,106 @@
+# Updated : 2026.06.14
+# Version : 1.0.0
+# GitHub  : https://github.com/Dackara/
+# GitHub  : https://github.com/kjm5759/pylontech-monitor
+
+esphome:
+  devices:
+    - id: ${pylon_name}_${pylon_bat_number}_device
+      name: "Pylontech Battery ${pylon_bat_number}"
+      
+pylontech_monitor:
+  batteries:
+    - voltage:
+        id: ${pylon_name}_${pylon_bat_number}_voltage
+        name: ${pylon_name}_${pylon_bat_number}_voltage
+        device_id: ${pylon_name}_${pylon_bat_number}_device
+      current:
+        id: ${pylon_name}_${pylon_bat_number}_current
+        name: ${pylon_name}_${pylon_bat_number}_current
+        device_id: ${pylon_name}_${pylon_bat_number}_device
+      temperature:
+        id: ${pylon_name}_${pylon_bat_number}_temperature
+        name: ${pylon_name}_${pylon_bat_number}_temperature
+        device_id: ${pylon_name}_${pylon_bat_number}_device
+      temp_high:
+        id: ${pylon_name}_${pylon_bat_number}_temp_high
+        name: ${pylon_name}_${pylon_bat_number}_temp_high
+        device_id: ${pylon_name}_${pylon_bat_number}_device
+      temp_low:
+        id: ${pylon_name}_${pylon_bat_number}_temp_low
+        name: ${pylon_name}_${pylon_bat_number}_temp_low
+        device_id: ${pylon_name}_${pylon_bat_number}_device
+      cell_voltage_high:
+        id: ${pylon_name}_${pylon_bat_number}_cell_voltage_high
+        name: ${pylon_name}_${pylon_bat_number}_cell_voltage_high
+        device_id: ${pylon_name}_${pylon_bat_number}_device
+      cell_voltage_low:
+        id: ${pylon_name}_${pylon_bat_number}_cell_voltage_low
+        name: ${pylon_name}_${pylon_bat_number}_cell_voltage_low
+        device_id: ${pylon_name}_${pylon_bat_number}_device
+      soc:
+        id: ${pylon_name}_${pylon_bat_number}_soc
+        name: ${pylon_name}_${pylon_bat_number}_soc
+        device_id: ${pylon_name}_${pylon_bat_number}_device
+      soh:
+        id: ${pylon_name}_${pylon_bat_number}_soh
+        name: ${pylon_name}_${pylon_bat_number}_soh
+        device_id: ${pylon_name}_${pylon_bat_number}_device
+      cycle_count:
+        id: ${pylon_name}_${pylon_bat_number}_cycle_count
+        name: ${pylon_name}_${pylon_bat_number}_cycle_count
+        device_id: ${pylon_name}_${pylon_bat_number}_device
+      coulomb:
+        id: ${pylon_name}_${pylon_bat_number}_coulomb
+        name: ${pylon_name}_${pylon_bat_number}_coulomb
+        device_id: ${pylon_name}_${pylon_bat_number}_device
+      capacity:
+        id: ${pylon_name}_${pylon_bat_number}_capacity
+        name: ${pylon_name}_${pylon_bat_number}_capacity
+        device_id: ${pylon_name}_${pylon_bat_number}_device
+      cells:
+        - id: ${pylon_name}_${pylon_bat_number}_cell_1
+          name: ${pylon_name}_${pylon_bat_number}_cell_1
+          device_id: ${pylon_name}_${pylon_bat_number}_device
+        - id: ${pylon_name}_${pylon_bat_number}_cell_2
+          name: ${pylon_name}_${pylon_bat_number}_cell_2
+          device_id: ${pylon_name}_${pylon_bat_number}_device
+        - id: ${pylon_name}_${pylon_bat_number}_cell_3
+          name: ${pylon_name}_${pylon_bat_number}_cell_3
+          device_id: ${pylon_name}_${pylon_bat_number}_device
+        - id: ${pylon_name}_${pylon_bat_number}_cell_4
+          name: ${pylon_name}_${pylon_bat_number}_cell_4
+          device_id: ${pylon_name}_${pylon_bat_number}_device
+        - id: ${pylon_name}_${pylon_bat_number}_cell_5
+          name: ${pylon_name}_${pylon_bat_number}_cell_5
+          device_id: ${pylon_name}_${pylon_bat_number}_device
+        - id: ${pylon_name}_${pylon_bat_number}_cell_6
+          name: ${pylon_name}_${pylon_bat_number}_cell_6
+          device_id: ${pylon_name}_${pylon_bat_number}_device
+        - id: ${pylon_name}_${pylon_bat_number}_cell_7
+          name: ${pylon_name}_${pylon_bat_number}_cell_7
+          device_id: ${pylon_name}_${pylon_bat_number}_device
+        - id: ${pylon_name}_${pylon_bat_number}_cell_8
+          name: ${pylon_name}_${pylon_bat_number}_cell_8
+          device_id: ${pylon_name}_${pylon_bat_number}_device
+        - id: ${pylon_name}_${pylon_bat_number}_cell_9
+          name: ${pylon_name}_${pylon_bat_number}_cell_9
+          device_id: ${pylon_name}_${pylon_bat_number}_device
+        - id: ${pylon_name}_${pylon_bat_number}_cell_10
+          name: ${pylon_name}_${pylon_bat_number}_cell_10
+          device_id: ${pylon_name}_${pylon_bat_number}_device
+        - id: ${pylon_name}_${pylon_bat_number}_cell_11
+          name: ${pylon_name}_${pylon_bat_number}_cell_11
+          device_id: ${pylon_name}_${pylon_bat_number}_device
+        - id: ${pylon_name}_${pylon_bat_number}_cell_12
+          name: ${pylon_name}_${pylon_bat_number}_cell_12
+          device_id: ${pylon_name}_${pylon_bat_number}_device
+        - id: ${pylon_name}_${pylon_bat_number}_cell_13
+          name: ${pylon_name}_${pylon_bat_number}_cell_13
+          device_id: ${pylon_name}_${pylon_bat_number}_device
+        - id: ${pylon_name}_${pylon_bat_number}_cell_14
+          name: ${pylon_name}_${pylon_bat_number}_cell_14
+          device_id: ${pylon_name}_${pylon_bat_number}_device
+        - id: ${pylon_name}_${pylon_bat_number}_cell_15
+          name: ${pylon_name}_${pylon_bat_number}_cell_15
+          device_id: ${pylon_name}_${pylon_bat_number}_device

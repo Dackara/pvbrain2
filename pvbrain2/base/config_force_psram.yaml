@@ -1,10 +1,10 @@
-# Updated : 2024.05.21
-# Version : 1.0.2
+# Updated : 2025.10.09
+# Version : 1.0.4
 # GitHub  : https://github.com/Dackara/
 
 #-----------------------------------------------------------------------------------------------#
 
-## EXEMPLE FOR USE :
+# # EXEMPLE FOR USE :
 # packages:
 #   config_force_psram: pvbrain2/base/config_force_psram.yaml
 
@@ -21,14 +21,16 @@ esphome:
   platformio_options:
     build_flags: "-DBOARD_HAS_PSRAM"
     board_build.arduino.memory_type: opi_opi                  # qio_opi
+    board_build.flash_mode: dio                               # qio
 
 esp32:
   framework:
     sdkconfig_options:
-      COMPILER_OPTIMIZATION_SIZE: y
+      COMPILER_OPTIMIZATION_SIZE: y                           
+      CONFIG_ESP32S3_DEFAULT_CPU_FREQ_240: y                  # Force the ESP CPU to switch to 240Mhz
       CONFIG_COMPILER_OPTIMIZATION_PERF: y
       CONFIG_SPIRAM_SUPPORT: y
-      CONFIG_SPIRAM_USE_MALLOC: y                             # fully integrating it making malloc() also able to return SPI RAM pointers.
+      CONFIG_SPIRAM_USE_MALLOC: y                             # Fully integrating it making malloc() also able to return SPI RAM pointers.
       CONFIG_SPIRAM_ALLOW_BSS_SEG_EXTERNAL_MEMORY: y
       CONFIG_SPIRAM_ALLOW_NOINIT_SEG_EXTERNAL_MEMORY: y       # Allow .noinit segment placed in external memory
       CONFIG_SPIRAM_ALLOW_STACK_EXTERNAL_MEMORY: y            # Allow external memory as an argument to xTaskCreateStatic
@@ -40,3 +42,41 @@ esp32:
       CONFIG_MBEDTLS_EXTERNAL_MEM_ALLOC: y                    # Allocation strategy for mbedTLS, essentially provides ability to allocate all required dynamic allocations
       CONFIG_SPIRAM_MALLOC_RESERVE_INTERNAL: "131072"         # Reserve this amount of bytes for data that specifically needs to be in DMA or internal memory. Default value: 32768
       CONFIG_SPIRAM_MALLOC_ALWAYSINTERNAL: "8096"             # Maximum malloc() size, in bytes, to always put in internal memory. Default value: 16384
+
+
+
+
+
+
+
+      ### Explication :
+      ## CONFIG_SPIRAM_SUPPORT: y + CONFIG_SPIRAM_USE_MALLOC: y
+      # tout malloc() peut utiliser la PSRAM.
+
+      ## CONFIG_SPIRAM_ALLOW_*_EXTERNAL_MEMORY: y
+      # Permet de placer .bss, .noinit et stacks dans la PSRAM → boost réel des performances et libère la SRAM interne.
+
+      ## CONFIG_SPIRAM_MALLOC_RESERVE_INTERNAL: "131072"
+      # Réserve de la RAM interne pour DMA / accès critique → nécessaire, ne change pas.
+
+      ## CONFIG_SPIRAM_MALLOC_ALWAYSINTERNAL: "8096"
+      # petits malloc sensibles restent en SRAM interne.
+
+      ## board_build.arduino.memory_type: opi_opi
+      # Sur ESP32-S3 avec ESP-IDF, c’est souvent juste pour compatibilité avec certaines puces flash externes.
+      # Pas vraiment un facteur de performance significatif si le flash fonctionne déjà correctement.
+      # éventuellement tester qio_opi vs opi_opi pour vérifier stabilité ou vitesse de boot, mais ce n’est pas critique.
+
+      ## CONFIG_COMPILER_OPTIMIZATION_PERF: y
+      # ça optimise le code pour la vitesse plutôt que la taille.
+
+      ## CONFIG_COMPILER_OPTIMIZATION_SIZE: y
+      # redondant avec PERF, mais ok
+
+      ## CONFIG_SPIRAM_ALLOW_STACK_EXTERNAL_MEMORY: y
+      # Par défaut, chaque tâche FreeRTOS utilise un stack dans la SRAM interne. 
+      # Avec beaucoup d’entités, on peux déplacer certaines stacks dans PSRAM.
+      
+      ## build_flags: "-DBOARD_HAS_PSRAM"
+      # N’est plus strictement nécessaire, mais ça peut aider certaines librairies Arduino à détecter la PSRAM automatiquement.
+      # C’est surtout un signal “compatibilité maximale” → pas critique mais inoffensif de le laisser.

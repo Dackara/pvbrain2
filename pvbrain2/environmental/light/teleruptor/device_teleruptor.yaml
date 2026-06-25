@@ -1,5 +1,5 @@
-# Updated : 2024.05.22
-# Version : 1.0.1
+# Updated : 2024.05.25
+# Version : 1.0.2
 # GitHub  : https://github.com/Dackara/
 
 # This code allows you to control your light teleruptor from the ESP or
@@ -9,8 +9,14 @@
 
 esphome:
   on_boot:
-    priority: -101.0
+    priority: -100.0
     then:
+      - script.execute: ${teleruptor_name}_on_boot_script
+
+script:
+  - id: ${teleruptor_name}_on_boot_script
+    then:
+      - delay: 2s
       - if:
           condition:
             - binary_sensor.is_on: ${teleruptor_name}_copy_detection_230v
@@ -19,14 +25,42 @@ esphome:
             - binary_sensor.template.publish:
                 id: ${teleruptor_name}_copy_detection_230v_long_delay
                 state: ON
-      - if:
-          condition:
-            - binary_sensor.is_off: ${teleruptor_name}_copy_detection_230v
-          then:
-            - delay: 2s
-            - binary_sensor.template.publish:
-                id: ${teleruptor_name}_copy_detection_230v_long_delay
-                state: OFF
+          else:
+            - if:
+                condition:
+                  - binary_sensor.is_off: ${teleruptor_name}_copy_detection_230v
+                then:
+                  - delay: 2s
+                  - binary_sensor.template.publish:
+                      id: ${teleruptor_name}_copy_detection_230v_long_delay
+                      state: OFF
+                else:
+                  - logger.log:
+                      format: "${teleruptor_name} à rencontré un problème lors du boot."
+                      level: ERROR
+                      tag: teleruptor
+
+# esphome:
+#   on_boot:
+#     priority: ${on_boot_priority} #-101.0
+#     then:
+#       # - delay: 20s
+#       - if:
+#           condition:
+#             - binary_sensor.is_on: ${teleruptor_name}_copy_detection_230v
+#           then:
+#             - delay: 2s
+#             - binary_sensor.template.publish:
+#                 id: ${teleruptor_name}_copy_detection_230v_long_delay
+#                 state: ON
+#       - if:
+#           condition:
+#             - binary_sensor.is_off: ${teleruptor_name}_copy_detection_230v
+#           then:
+#             - delay: 2s
+#             - binary_sensor.template.publish:
+#                 id: ${teleruptor_name}_copy_detection_230v_long_delay
+#                 state: OFF
 
 output:
   - platform: template
@@ -43,9 +77,9 @@ output:
 
 switch:
   - platform: output
-    output: ${teleruptor_name}_false_output
     name: ${name}_${teleruptor_name}_switch
     id: ${teleruptor_name}_switch
+    output: ${teleruptor_name}_false_output
     on_turn_on:
       if:
         condition:
@@ -92,6 +126,7 @@ light:
           - button.press: ${teleruptor_name}_button
         else:
           - logger.log: "Le télérupteur a déjà été activé il y a une seconde"
+
 button:
   - platform: output
     name: ${name}_${teleruptor_name}_button
@@ -109,7 +144,9 @@ binary_sensor:
     internal: true
     filters:
       - invert:
-      - delayed_off: 100ms
+      # - delayed_off: 100ms
+      - delayed_on_off: 1s
+      - settle: 1s
     on_state:
       then:
         - if:

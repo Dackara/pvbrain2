@@ -1,3 +1,12 @@
+# Updated : 2026.06.16
+# Version : 1.0.1
+# GitHub  : https://github.com/Dackara/
+
+esphome:
+  devices:
+    - id: ${powermeter_name}_device
+      name: "Powermeter ${powermeter_name}"
+
 globals:
   - id: ${powermeter_name}_energy_yesterday_global
     type: float
@@ -17,7 +26,9 @@ time:
     
 button:
   - platform: template
+    id: ${powermeter_name}_reset_energy
     name: ${name}_${powermeter_name}_reset_energy
+    device_id: ${powermeter_name}_device
     on_press:
       then:
         - pzemac.reset_energy: ${powermeter_name}_id
@@ -28,37 +39,47 @@ sensor:
     modbus_id: ${powermeter_modbus_id}
     address: ${powermeter_modbus_address}
     current:
+      id: ${powermeter_name}_current
       name: ${name}_${powermeter_name}_current
+      device_id: ${powermeter_name}_device
       accuracy_decimals: 2
     voltage:
+      id: ${powermeter_name}_voltage
       name: ${name}_${powermeter_name}_voltage
+      device_id: ${powermeter_name}_device
       accuracy_decimals: 2
     power:
-      name: ${name}_${powermeter_name}_power
       id: ${powermeter_name}_power
+      name: ${name}_${powermeter_name}_power
+      device_id: ${powermeter_name}_device
       unit_of_measurement: 'W'
       accuracy_decimals: 1
     frequency:
+      id: ${powermeter_name}_frequency
       name: ${name}_${powermeter_name}_frequency
+      device_id: ${powermeter_name}_device
       unit_of_measurement: 'Hz'
       accuracy_decimals: 2
     power_factor:
-      name: ${name}_${powermeter_name}_power_factor
-      accuracy_decimals: 2
       id: ${powermeter_name}_power_factor
+      name: ${name}_${powermeter_name}_power_factor
+      device_id: ${powermeter_name}_device
+      accuracy_decimals: 2
     energy:
+      id: ${powermeter_name}_energy_total
       name: ${name}_${powermeter_name}_energy_total
+      device_id: ${powermeter_name}_device
       unit_of_measurement: 'kWh'
       accuracy_decimals: 1
-      id: ${powermeter_name}_energy_total
       icon: mdi:counter
       filters: 
         - multiply: 0.001
     update_interval: ${powermeter_update_interval}
     
   - platform: total_daily_energy
-    name: ${name}_${powermeter_name}_energy_today
     id: ${powermeter_name}_energy_today
+    name: ${name}_${powermeter_name}_energy_today
+    device_id: ${powermeter_name}_device
     power_id: ${powermeter_name}_power
     unit_of_measurement: 'kWh'
     accuracy_decimals: 1
@@ -70,8 +91,9 @@ sensor:
     icon: mdi:counter
     
   - platform: template
-    name: ${name}_${powermeter_name}_energy_yesterday
     id: ${powermeter_name}_energy_yesterday
+    name: ${name}_${powermeter_name}_energy_yesterday
+    device_id: ${powermeter_name}_device
     unit_of_measurement: 'kWh'
     accuracy_decimals: 1
     icon: mdi:counter
@@ -80,8 +102,9 @@ sensor:
       return (id(${powermeter_name}_energy_yesterday).state = id(${powermeter_name}_energy_yesterday_global));
     
   - platform: template
-    name: ${name}_${powermeter_name}_apparent_power
     id: ${powermeter_name}_apparent_power
+    name: ${name}_${powermeter_name}_apparent_power
+    device_id: ${powermeter_name}_device
     unit_of_measurement: 'VA'
     accuracy_decimals: 1
     update_interval: ${powermeter_template_update}
@@ -95,8 +118,9 @@ sensor:
       }
     
   - platform: template
-    name: ${name}_${powermeter_name}_reactive_power
     id: ${powermeter_name}__reactive_power
+    name: ${name}_${powermeter_name}_reactive_power
+    device_id: ${powermeter_name}_device
     unit_of_measurement: 'var'
     accuracy_decimals: 1
     update_interval: ${powermeter_template_update}
